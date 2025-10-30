@@ -1,19 +1,51 @@
 package me.lucasgusmao.financeai;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import me.lucasgusmao.financeai.view.SplashScreen;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
-import java.io.IOException;
-
+@SpringBootApplication
 public class HelloApplication extends Application {
+
+    private ConfigurableApplicationContext springContext;
+    private SplashScreen splashScreen;
+
     @Override
-    public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Hello!");
+    public void init() {
+        Platform.runLater(() -> {
+            splashScreen = new SplashScreen();
+            splashScreen.show();
+        });
+        springContext = SpringApplication.run(HelloApplication.class);
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        Thread.sleep(500);
+
+        FXMLLoader fxmlLoader = new FXMLLoader(
+                HelloApplication.class.getResource("login-view.fxml")
+        );
+        fxmlLoader.setControllerFactory(springContext::getBean);
+
+        Scene scene = new Scene(fxmlLoader.load(), 400, 500);
+        stage.setTitle("FinanceAI - Login");
         stage.setScene(scene);
-        stage.show();
+        Platform.runLater(() -> {
+            splashScreen.close();
+            stage.show();
+        });
+    }
+
+    @Override
+    public void stop() {
+        springContext.close();
+        Platform.exit();
     }
 }
