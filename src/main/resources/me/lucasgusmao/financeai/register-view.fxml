@@ -6,223 +6,253 @@
 <?import javafx.scene.shape.*?>
 
 <?import java.net.URL?>
-<StackPane xmlns="http://javafx.com/javafx"
+<StackPane fx:id="rootPane" xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="me.lucasgusmao.financeai.controller.RegisterController"
            style="-fx-background-color: #18181B;">
     <stylesheets>
-        <URL value="@styles.css"/>
+        <URL value="@style/styles.css"/>
     </stylesheets>
-    <Circle radius="380" layoutX="650" layoutY="-180"
+    <Circle fx:id="backgroundCircle1" radius="380"
             fill="radial-gradient(center 50% 50%, radius 100%, rgba(91, 33, 182, 0.04), transparent)"
-            mouseTransparent="true"/>
-    <Circle radius="320" layoutX="-120" layoutY="680"
+            mouseTransparent="true"
+            StackPane.alignment="TOP_RIGHT"
+            translateX="200" translateY="-180"/>
+    <Circle fx:id="backgroundCircle2" radius="320"
             fill="radial-gradient(center 50% 50%, radius 100%, rgba(107, 79, 187, 0.03), transparent)"
-            mouseTransparent="true"/>
-    <ScrollPane fitToWidth="true"
+            mouseTransparent="true"
+            StackPane.alignment="BOTTOM_LEFT"
+            translateX="-150" translateY="180"/>
+    <ScrollPane fitToWidth="true" fitToHeight="true"
                 style="-fx-background-color: transparent;
                        -fx-background: transparent;"
-                hbarPolicy="NEVER" vbarPolicy="NEVER">
-
-        <HBox alignment="CENTER" spacing="60" style="-fx-padding: 50 0;" maxWidth="1000">
-            <VBox alignment="CENTER_LEFT" spacing="28" maxWidth="380">
-                <VBox spacing="14">
-                    <Label text="Comece Agora"
-                           style="-fx-font-size: 38px;
-                                  -fx-font-weight: 600;
-                                  -fx-text-fill: #F4F4F5;
-                                  -fx-letter-spacing: -0.5px;"/>
-                    <Label text="Crie sua conta e transforme a forma como você gerencia seu dinheiro"
-                           wrapText="true"
-                           style="-fx-font-size: 15px;
-                                  -fx-text-fill: #A1A1AA;
-                                  -fx-line-spacing: 5px;"/>
-                </VBox>
-                <VBox spacing="18" style="-fx-padding: 12 0 0 0;">
-                    <HBox spacing="14" alignment="CENTER_LEFT">
-                        <StackPane style="-fx-background-color: rgba(124, 58, 237, 0.15);
-                                          -fx-background-radius: 8;
-                                          -fx-pref-width: 40;
-                                          -fx-pref-height: 40;">
-                            <Label text="✓" style="-fx-text-fill: #A78BFA; -fx-font-size: 18px; -fx-font-weight: bold;"/>
-                        </StackPane>
-                        <VBox spacing="2">
-                            <Label text="Totalmente Gratuito"
-                                   style="-fx-text-fill: #E4E4E7; -fx-font-size: 14px; -fx-font-weight: 600;"/>
-                            <Label text="Sem custos ocultos ou taxas"
-                                   style="-fx-text-fill: #71717A; -fx-font-size: 12px;"/>
-                        </VBox>
-                    </HBox>
-
-                    <HBox spacing="14" alignment="CENTER_LEFT">
-                        <StackPane style="-fx-background-color: rgba(109, 40, 217, 0.15);
-                                          -fx-background-radius: 8;
-                                          -fx-pref-width: 40;
-                                          -fx-pref-height: 40;">
-                            <Label text="🔒" style="-fx-font-size: 16px;"/>
-                        </StackPane>
-                        <VBox spacing="2">
-                            <Label text="Seguro e Privado"
-                                   style="-fx-text-fill: #E4E4E7; -fx-font-size: 14px; -fx-font-weight: 600;"/>
-                            <Label text="Seus dados são criptografados"
-                                   style="-fx-text-fill: #71717A; -fx-font-size: 12px;"/>
-                        </VBox>
-                    </HBox>
-
-                    <HBox spacing="14" alignment="CENTER_LEFT">
-                        <StackPane style="-fx-background-color: rgba(91, 33, 182, 0.15);
-                                          -fx-background-radius: 8;
-                                          -fx-pref-width: 40;
-                                          -fx-pref-height: 40;">
-                            <Label text="⚡" style="-fx-font-size: 16px;"/>
-                        </StackPane>
-                        <VBox spacing="2">
-                            <Label text="Setup Rápido"
-                                   style="-fx-text-fill: #E4E4E7; -fx-font-size: 14px; -fx-font-weight: 600;"/>
-                            <Label text="Comece em menos de 2 minutos"
-                                   style="-fx-text-fill: #71717A; -fx-font-size: 12px;"/>
-                        </VBox>
-                    </HBox>
-                </VBox>
-            </VBox>
-            <VBox alignment="CENTER" spacing="0" maxWidth="420">
-
-                <VBox alignment="CENTER" spacing="24"
-                      style="-fx-background-color: #27272A;
-                             -fx-background-radius: 16;
-                             -fx-padding: 44 38 44 38;
-                             -fx-border-color: #3F3F46;
-                             -fx-border-width: 1;
-                             -fx-border-radius: 16;">
-                    <VBox alignment="CENTER" spacing="6">
-                        <Label text="Criar Conta"
-                               style="-fx-font-size: 26px;
+                hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                pannable="false">
+        <StackPane minHeight="600">
+            <HBox alignment="CENTER" spacing="80" maxWidth="1100"
+                  style="-fx-padding: 60 40 60 40;">
+                <VBox fx:id="leftContent" alignment="CENTER_LEFT" spacing="32" maxWidth="420" minWidth="380">
+                    <VBox spacing="16">
+                        <Label fx:id="titleLabel"
+                               text="Comece Agora"
+                               style="-fx-font-size: 42px;
                                       -fx-font-weight: 600;
-                                      -fx-text-fill: #F4F4F5;"/>
-                        <Label text="Preencha os dados abaixo"
-                               style="-fx-font-size: 13px;
-                                      -fx-text-fill: #A1A1AA;"/>
-                    </VBox>
-
-                    <VBox spacing="18">
-                        <VBox spacing="9">
-                            <Label text="Nome completo"
-                                   style="-fx-text-fill: #E4E4E7;
-                                          -fx-font-size: 13px;
-                                          -fx-font-weight: 500;"/>
-                            <TextField fx:id="nameField"
-                                       promptText="João Silva"
-                                       style="-fx-background-color: #18181B;
-                                              -fx-text-fill: #F4F4F5;
-                                              -fx-prompt-text-fill: #71717A;
-                                              -fx-background-radius: 10;
-                                              -fx-border-color: #3F3F46;
-                                              -fx-border-radius: 10;
-                                              -fx-border-width: 1.5;
-                                              -fx-padding: 13 16;
-                                              -fx-font-size: 14px;
-                                              -fx-pref-width: 344px;"/>
-                        </VBox>
-                        <VBox spacing="9">
-                            <Label text="Email"
-                                   style="-fx-text-fill: #E4E4E7;
-                                          -fx-font-size: 13px;
-                                          -fx-font-weight: 500;"/>
-                            <TextField fx:id="emailField"
-                                       promptText="seu@email.com"
-                                       style="-fx-background-color: #18181B;
-                                              -fx-text-fill: #F4F4F5;
-                                              -fx-prompt-text-fill: #71717A;
-                                              -fx-background-radius: 10;
-                                              -fx-border-color: #3F3F46;
-                                              -fx-border-radius: 10;
-                                              -fx-border-width: 1.5;
-                                              -fx-padding: 13 16;
-                                              -fx-font-size: 14px;
-                                              -fx-pref-width: 344px;"/>
-                        </VBox>
-                        <VBox spacing="9">
-                            <Label text="Senha"
-                                   style="-fx-text-fill: #E4E4E7;
-                                          -fx-font-size: 13px;
-                                          -fx-font-weight: 500;"/>
-                            <PasswordField fx:id="passwordField"
-                                           promptText="Mínimo 6 caracteres"
-                                           style="-fx-background-color: #18181B;
-                                                  -fx-text-fill: #F4F4F5;
-                                                  -fx-prompt-text-fill: #71717A;
-                                                  -fx-background-radius: 10;
-                                                  -fx-border-color: #3F3F46;
-                                                  -fx-border-radius: 10;
-                                                  -fx-border-width: 1.5;
-                                                  -fx-padding: 13 16;
-                                                  -fx-font-size: 14px;
-                                                  -fx-pref-width: 344px;"/>
-                        </VBox>
-                        <VBox spacing="9">
-                            <Label text="Confirmar senha"
-                                   style="-fx-text-fill: #E4E4E7;
-                                          -fx-font-size: 13px;
-                                          -fx-font-weight: 500;"/>
-                            <PasswordField fx:id="confirmPasswordField"
-                                           promptText="Digite novamente"
-                                           style="-fx-background-color: #18181B;
-                                                  -fx-text-fill: #F4F4F5;
-                                                  -fx-prompt-text-fill: #71717A;
-                                                  -fx-background-radius: 10;
-                                                  -fx-border-color: #3F3F46;
-                                                  -fx-border-radius: 10;
-                                                  -fx-border-width: 1.5;
-                                                  -fx-padding: 13 16;
-                                                  -fx-font-size: 14px;
-                                                  -fx-pref-width: 344px;"/>
-                        </VBox>
-                        <Label fx:id="errorLabel"
-                               visible="false"
+                                      -fx-text-fill: #F4F4F5;
+                                      -fx-letter-spacing: -1px;"/>
+                        <Label fx:id="subtitleLabel"
+                               text="Crie sua conta e transforme a forma como você gerencia seu dinheiro"
                                wrapText="true"
-                               maxWidth="344"
-                               style="-fx-font-size: 12px;
-                                      -fx-background-radius: 8;
-                                      -fx-padding: 11 14;
-                                      -fx-border-width: 1;
-                                      -fx-border-radius: 8;"/>
-
-                        <Button fx:id="registerButton"
-                                text="Criar Conta"
-                                onAction="#handleRegister"
-                                style="-fx-background-color: #7C3AED;
-                                       -fx-text-fill: white;
-                                       -fx-font-size: 14px;
-                                       -fx-font-weight: 600;
-                                       -fx-background-radius: 10;
-                                       -fx-cursor: hand;
-                                       -fx-pref-width: 344px;
-                                       -fx-pref-height: 44px;"/>
-                        <HBox alignment="CENTER" spacing="12" style="-fx-padding: 4 0;">
-                            <Separator HBox.hgrow="ALWAYS"
-                                       style="-fx-background-color: #3F3F46; -fx-padding: 0.5 0;"/>
-                            <Label text="OU"
-                                   style="-fx-text-fill: #71717A;
-                                          -fx-font-size: 11px;
-                                          -fx-font-weight: 600;"/>
-                            <Separator HBox.hgrow="ALWAYS"
-                                       style="-fx-background-color: #3F3F46; -fx-padding: 0.5 0;"/>
+                               maxWidth="380"
+                               style="-fx-font-size: 16px;
+                                      -fx-text-fill: #A1A1AA;
+                                      -fx-line-spacing: 6px;"/>
+                    </VBox>
+                    <VBox spacing="20" style="-fx-padding: 16 0 0 0;">
+                        <HBox fx:id="benefit1" spacing="16" alignment="CENTER_LEFT">
+                            <StackPane fx:id="benefitIcon1"
+                                       style="-fx-background-color: rgba(124, 58, 237, 0.15);
+                                              -fx-background-radius: 10;
+                                              -fx-min-width: 44;
+                                              -fx-min-height: 44;
+                                              -fx-max-width: 44;
+                                              -fx-max-height: 44;">
+                                <Label text="✓" style="-fx-text-fill: #A78BFA; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+                            </StackPane>
+                            <VBox spacing="3">
+                                <Label text="Totalmente Gratuito"
+                                       style="-fx-text-fill: #E4E4E7; -fx-font-size: 15px; -fx-font-weight: 600;"/>
+                                <Label text="Sem custos ocultos ou taxas mensais"
+                                       wrapText="true"
+                                       maxWidth="280"
+                                       style="-fx-text-fill: #71717A; -fx-font-size: 13px;"/>
+                            </VBox>
                         </HBox>
-                        <HBox alignment="CENTER" spacing="6">
-                            <Label text="Já tem uma conta?"
-                                   style="-fx-text-fill: #A1A1AA;
-                                          -fx-font-size: 13px;"/>
-                            <Hyperlink fx:id="loginLink"
-                                       text="Fazer login"
-                                       onAction="#backToLogin"
-                                       style="-fx-text-fill: #7C3AED;
-                                              -fx-font-size: 13px;
-                                              -fx-font-weight: 600;
-                                              -fx-underline: false;"/>
+                        <HBox fx:id="benefit2" spacing="16" alignment="CENTER_LEFT">
+                            <StackPane fx:id="benefitIcon2"
+                                       style="-fx-background-color: rgba(109, 40, 217, 0.15);
+                                              -fx-background-radius: 10;
+                                              -fx-min-width: 44;
+                                              -fx-min-height: 44;
+                                              -fx-max-width: 44;
+                                              -fx-max-height: 44;">
+                                <Label text="🔒" style="-fx-font-size: 18px;"/>
+                            </StackPane>
+                            <VBox spacing="3">
+                                <Label text="Seguro e Privado"
+                                       style="-fx-text-fill: #E4E4E7; -fx-font-size: 15px; -fx-font-weight: 600;"/>
+                                <Label text="Seus dados são criptografados e protegidos"
+                                       wrapText="true"
+                                       maxWidth="280"
+                                       style="-fx-text-fill: #71717A; -fx-font-size: 13px;"/>
+                            </VBox>
+                        </HBox>
+                        <HBox fx:id="benefit3" spacing="16" alignment="CENTER_LEFT">
+                            <StackPane fx:id="benefitIcon3"
+                                       style="-fx-background-color: rgba(91, 33, 182, 0.15);
+                                              -fx-background-radius: 10;
+                                              -fx-min-width: 44;
+                                              -fx-min-height: 44;
+                                              -fx-max-width: 44;
+                                              -fx-max-height: 44;">
+                                <Label text="⚡" style="-fx-font-size: 18px;"/>
+                            </StackPane>
+                            <VBox spacing="3">
+                                <Label text="Setup Rápido"
+                                       style="-fx-text-fill: #E4E4E7; -fx-font-size: 15px; -fx-font-weight: 600;"/>
+                                <Label text="Comece a usar em menos de 2 minutos"
+                                       wrapText="true"
+                                       maxWidth="280"
+                                       style="-fx-text-fill: #71717A; -fx-font-size: 13px;"/>
+                            </VBox>
                         </HBox>
                     </VBox>
                 </VBox>
-            </VBox>
-        </HBox>
+                <VBox fx:id="rightContent" alignment="CENTER" spacing="0">
+                    <VBox alignment="CENTER" spacing="26"
+                          maxWidth="440" minWidth="440"
+                          style="-fx-background-color: #27272A;
+                                 -fx-background-radius: 16;
+                                 -fx-padding: 48 42 48 42;
+                                 -fx-border-color: #3F3F46;
+                                 -fx-border-width: 1;
+                                 -fx-border-radius: 16;">
+                        <VBox alignment="CENTER" spacing="8">
+                            <Label text="Criar Conta"
+                                   style="-fx-font-size: 28px;
+                                          -fx-font-weight: 600;
+                                          -fx-text-fill: #F4F4F5;"/>
+                            <Label text="Preencha os dados abaixo para começar"
+                                   style="-fx-font-size: 14px;
+                                          -fx-text-fill: #A1A1AA;"/>
+                        </VBox>
+
+                        <VBox spacing="18" alignment="CENTER">
+                            <VBox spacing="10">
+                                <Label text="Nome completo"
+                                       style="-fx-text-fill: #E4E4E7;
+                                              -fx-font-size: 13px;
+                                              -fx-font-weight: 500;"/>
+                                <TextField fx:id="nameField"
+                                           promptText="Lucas Gusmão Baptista"
+                                           styleClass="modern-input"
+                                           style="-fx-background-color: #18181B;
+                                                  -fx-text-fill: #F4F4F5;
+                                                  -fx-prompt-text-fill: #71717A;
+                                                  -fx-background-radius: 10;
+                                                  -fx-border-color: #3F3F46;
+                                                  -fx-border-radius: 10;
+                                                  -fx-border-width: 1.5;
+                                                  -fx-padding: 13 16;
+                                                  -fx-font-size: 14px;
+                                                  -fx-pref-width: 356px;"/>
+                            </VBox>
+                            <VBox spacing="10">
+                                <Label text="Email"
+                                       style="-fx-text-fill: #E4E4E7;
+                                              -fx-font-size: 13px;
+                                              -fx-font-weight: 500;"/>
+                                <TextField fx:id="emailField"
+                                           promptText="seu@email.com"
+                                           styleClass="modern-input"
+                                           style="-fx-background-color: #18181B;
+                                                  -fx-text-fill: #F4F4F5;
+                                                  -fx-prompt-text-fill: #71717A;
+                                                  -fx-background-radius: 10;
+                                                  -fx-border-color: #3F3F46;
+                                                  -fx-border-radius: 10;
+                                                  -fx-border-width: 1.5;
+                                                  -fx-padding: 13 16;
+                                                  -fx-font-size: 14px;
+                                                  -fx-pref-width: 356px;"/>
+                            </VBox>
+                            <VBox spacing="10">
+                                <Label text="Senha"
+                                       style="-fx-text-fill: #E4E4E7;
+                                              -fx-font-size: 13px;
+                                              -fx-font-weight: 500;"/>
+                                <PasswordField fx:id="passwordField"
+                                               promptText="Mínimo 6 caracteres"
+                                               styleClass="modern-input"
+                                               style="-fx-background-color: #18181B;
+                                                      -fx-text-fill: #F4F4F5;
+                                                      -fx-prompt-text-fill: #71717A;
+                                                      -fx-background-radius: 10;
+                                                      -fx-border-color: #3F3F46;
+                                                      -fx-border-radius: 10;
+                                                      -fx-border-width: 1.5;
+                                                      -fx-padding: 13 16;
+                                                      -fx-font-size: 14px;
+                                                      -fx-pref-width: 356px;"/>
+                            </VBox>
+                            <VBox spacing="10">
+                                <Label text="Confirmar senha"
+                                       style="-fx-text-fill: #E4E4E7;
+                                              -fx-font-size: 13px;
+                                              -fx-font-weight: 500;"/>
+                                <PasswordField fx:id="confirmPasswordField"
+                                               promptText="Digite novamente"
+                                               styleClass="modern-input"
+                                               style="-fx-background-color: #18181B;
+                                                      -fx-text-fill: #F4F4F5;
+                                                      -fx-prompt-text-fill: #71717A;
+                                                      -fx-background-radius: 10;
+                                                      -fx-border-color: #3F3F46;
+                                                      -fx-border-radius: 10;
+                                                      -fx-border-width: 1.5;
+                                                      -fx-padding: 13 16;
+                                                      -fx-font-size: 14px;
+                                                      -fx-pref-width: 356px;"/>
+                            </VBox>
+                            <Label fx:id="errorLabel"
+                                   visible="false"
+                                   wrapText="true"
+                                   maxWidth="356"
+                                   style="-fx-font-size: 12px;
+                                          -fx-background-radius: 8;
+                                          -fx-padding: 11 14;
+                                          -fx-border-width: 1;
+                                          -fx-border-radius: 8;"/>
+
+                            <Button fx:id="registerButton"
+                                    text="Criar Conta"
+                                    onAction="#handleRegister"
+                                    styleClass="modern-button"
+                                    style="-fx-background-color: #7C3AED;
+                                           -fx-text-fill: white;
+                                           -fx-font-size: 14px;
+                                           -fx-font-weight: 600;
+                                           -fx-background-radius: 10;
+                                           -fx-cursor: hand;
+                                           -fx-pref-width: 356px;
+                                           -fx-pref-height: 44px;"/>
+                            <HBox alignment="CENTER" spacing="12" style="-fx-padding: 6 0;">
+                                <Separator HBox.hgrow="ALWAYS"
+                                           maxWidth="150"
+                                           style="-fx-background-color: #3F3F46; -fx-padding: 0.5 0;"/>
+                                <Label text="OU"
+                                       style="-fx-text-fill: #71717A;
+                                              -fx-font-size: 11px;
+                                              -fx-font-weight: 600;"/>
+                                <Separator HBox.hgrow="ALWAYS"
+                                           maxWidth="150"
+                                           style="-fx-background-color: #3F3F46; -fx-padding: 0.5 0;"/>
+                            </HBox>
+                            <HBox alignment="CENTER" spacing="6">
+                                <Label text="Já tem uma conta?"
+                                       style="-fx-text-fill: #A1A1AA;
+                                              -fx-font-size: 13px;"/>
+                                <Hyperlink fx:id="loginLink"
+                                           text="Fazer login"
+                                           onAction="#handleBackToLogin"
+                                           style="-fx-text-fill: #7C3AED;
+                                                  -fx-font-size: 13px;
+                                                  -fx-font-weight: 600;
+                                                  -fx-underline: false;"/>
+                            </HBox>
+                        </VBox>
+                    </VBox>
+                </VBox>
+            </HBox>
+        </StackPane>
     </ScrollPane>
 </StackPane>

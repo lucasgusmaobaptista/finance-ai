@@ -4,10 +4,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import me.lucasgusmao.financeai.HelloApplication;
 import me.lucasgusmao.financeai.model.User;
 import me.lucasgusmao.financeai.service.AuthService;
+import me.lucasgusmao.financeai.style.animation.AnimationFX;
+import me.lucasgusmao.financeai.style.animation.ParallaxFX;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -30,11 +36,78 @@ public class LoginController {
     @FXML
     private Hyperlink registerLink;
 
+    @FXML
+    private StackPane rootPane;
+
+    @FXML
+    private Circle backgroundCircle1;
+
+    @FXML
+    private Circle backgroundCircle2;
+
+    @FXML
+    private VBox leftContent;
+
+    @FXML
+    private VBox rightContent;
+
+    @FXML
+    private Label titleLabel;
+
+    @FXML
+    private Label subtitleLabel;
+
+    @FXML
+    private HBox feature1;
+
+    @FXML
+    private HBox feature2;
+
+    @FXML
+    private HBox feature3;
+
     @Autowired
     private AuthService authService;
 
     @Autowired
     private ApplicationContext springContext;
+
+    @FXML
+    public void initialize() {
+        startAnimations();
+    }
+
+    private void startAnimations() {
+        if (backgroundCircle1 != null && backgroundCircle2 != null && rootPane != null) {
+            ParallaxFX.applyToBackground(rootPane, backgroundCircle1, backgroundCircle2);
+            AnimationFX.float3D(backgroundCircle1, 0);
+            AnimationFX.float3D(backgroundCircle2, 0.5);
+        }
+
+        if (titleLabel != null) {
+            AnimationFX.fadeInUp(titleLabel, 0.1);
+        }
+
+        if (subtitleLabel != null) {
+            AnimationFX.fadeInUp(subtitleLabel, 0.3);
+        }
+
+        if (feature1 != null) {
+            AnimationFX.fadeInUp(feature1, 0.5);
+        }
+
+        if (feature2 != null) {
+            AnimationFX.fadeInUp(feature2, 0.7);
+        }
+
+        if (feature3 != null) {
+            AnimationFX.fadeInUp(feature3, 0.9);
+        }
+
+        if (rightContent != null) {
+            AnimationFX.slideInRight(rightContent, 0.2);
+        }
+    }
 
     @FXML
     private void handleLogin() {
@@ -48,7 +121,6 @@ public class LoginController {
 
         try {
             User user = authService.login(username, password);
-            //TODO tirar debug antes de entregar o trabalho para professora
             System.out.println("Login realizado: " + user.getName());
             loadMainScreen();
         } catch (IllegalArgumentException e) {
@@ -66,10 +138,10 @@ public class LoginController {
                     HelloApplication.class.getResource("register-view.fxml")
             );
             loader.setControllerFactory(springContext::getBean);
-            Scene scene = new Scene(loader.load(), 400, 600);
+            Scene scene = new Scene(loader.load(), 1400, 900);
             Stage stage = (Stage) registerLink.getScene().getWindow();
             stage.setScene(scene);
-            stage.setTitle("Financia Aí - Cadastro");
+            stage.setTitle("FinanceAI - Cadastro");
         } catch (Exception e) {
             showError("Erro ao abrir tela de cadastro");
             e.printStackTrace();
@@ -78,14 +150,29 @@ public class LoginController {
 
     private void loadMainScreen() {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    HelloApplication.class.getResource("main-view.fxml")
-            );
-            loader.setControllerFactory(springContext::getBean);
-            Scene scene = new Scene(loader.load(), 1200, 800);
-            Stage stage = (Stage) loginButton.getScene().getWindow();
-            stage.setScene(scene);
-            stage.setTitle("Financia Aí - Dashboard");
+            Stage currentStage = (Stage) loginButton.getScene().getWindow();
+            currentStage.hide();
+
+            me.lucasgusmao.financeai.view.TransitionScreen transition =
+                    new me.lucasgusmao.financeai.view.TransitionScreen(() -> {
+                        javafx.application.Platform.runLater(() -> {
+                            try {
+                                FXMLLoader loader = new FXMLLoader(
+                                        HelloApplication.class.getResource("main-view.fxml")
+                                );
+                                loader.setControllerFactory(springContext::getBean);
+
+                                Scene scene = new Scene(loader.load(), 1600, 900);
+                                currentStage.setScene(scene);
+                                currentStage.setTitle("FinanceAI - Dashboard");
+                                currentStage.show();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
+                    });
+
+            transition.show();
         } catch (Exception e) {
             showError("Erro ao carregar tela principal");
             e.printStackTrace();
@@ -105,5 +192,6 @@ public class LoginController {
         -fx-font-size: 12px;
     """);
         errorLabel.setVisible(true);
+        AnimationFX.fadeInUp(errorLabel, 0);
     }
 }

@@ -27,15 +27,17 @@ public class HelloApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Thread.sleep(500);
+        Thread.sleep(1000);
 
         FXMLLoader fxmlLoader = new FXMLLoader(
                 HelloApplication.class.getResource("login-view.fxml")
         );
         fxmlLoader.setControllerFactory(springContext::getBean);
 
-        Scene scene = new Scene(fxmlLoader.load(), 400, 500);
-        stage.setTitle("FinanceAI - Login");
+        Scene scene = new Scene(fxmlLoader.load(), 1400, 900);
+        stage.setTitle("Financia Aí- Login");
+        stage.setMinWidth(1280);
+        stage.setMinHeight(720);
         stage.setScene(scene);
         Platform.runLater(() -> {
             splashScreen.close();

@@ -1,6 +1,8 @@
 package me.lucasgusmao.financeai.service;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import me.lucasgusmao.financeai.exceptions.custom.AlreadyExistsException;
 import me.lucasgusmao.financeai.model.User;
 import me.lucasgusmao.financeai.repository.UserRepository;
@@ -15,6 +17,9 @@ public class AuthService {
     
     private final UserRepository repository;
     private final PasswordEncoder encoder;
+    @Setter
+    @Getter
+    private User currentUser;
 
     public User register(String name, String email, String password) {
         //TODO adicionar login social via google, verificação de força da senha e validação  de conta via email/sms
@@ -25,6 +30,7 @@ public class AuthService {
         String username = email.split("@")[0];
         String encodedPassword = encoder.encode(password);
         User user = new User(name, email, username, encodedPassword);
+        this.currentUser = user;
         return repository.save(user);
     }
 
@@ -38,7 +44,12 @@ public class AuthService {
         if (!encoder.matches(password, userFound.getPassword())) {
             throw new IllegalArgumentException("Usuário e/ou senha inválidos.");
         }
+        this.currentUser = userFound;
         return userFound;
+    }
+
+    public void logout() {
+        this.currentUser = null;
     }
 
     public static boolean isValidEmail(String email) {
@@ -48,4 +59,5 @@ public class AuthService {
         String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
         return email.matches(emailRegex);
     }
+
 }

@@ -5,53 +5,55 @@
 <?import javafx.scene.shape.*?>
 
 <?import java.net.URL?>
-<StackPane xmlns="http://javafx.com/javafx"
+<StackPane fx:id="rootPane" xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="me.lucasgusmao.financeai.controller.LoginController"
            style="-fx-background-color: #18181B;">
     <stylesheets>
-        <URL value="@styles.css"/>
+        <URL value="@style/styles.css"/>
     </stylesheets>
-    <Circle radius="400" layoutX="-150" layoutY="-200"
+    <Circle fx:id="backgroundCircle1" radius="400" layoutX="-150" layoutY="-200"
             fill="radial-gradient(center 50% 50%, radius 100%, rgba(107, 79, 187, 0.04), transparent)"
             mouseTransparent="true"/>
-    <Circle radius="350" layoutX="550" layoutY="650"
+    <Circle fx:id="backgroundCircle2" radius="350" layoutX="550" layoutY="650"
             fill="radial-gradient(center 50% 50%, radius 100%, rgba(91, 33, 182, 0.03), transparent)"
             mouseTransparent="true"/>
 
     <HBox alignment="CENTER" spacing="60" maxWidth="1000">
-        <VBox alignment="CENTER_LEFT" spacing="24" maxWidth="400">
+        <VBox fx:id="leftContent" alignment="CENTER_LEFT" spacing="24" maxWidth="400">
             <VBox spacing="12">
-                <Label text="Financia Aí"
+                <Label fx:id="titleLabel"
+                       text="FinanceAI"
                        style="-fx-font-size: 42px;
                               -fx-font-weight: 600;
                               -fx-text-fill: #F4F4F5;
                               -fx-letter-spacing: -1px;"/>
-                <Label text="Gerencie suas finanças de forma inteligente e eficiente."
+                <Label fx:id="subtitleLabel"
+                       text="Gerencie suas finanças de forma inteligente"
                        wrapText="true"
                        style="-fx-font-size: 16px;
                               -fx-text-fill: #A1A1AA;
                               -fx-line-spacing: 4px;"/>
             </VBox>
             <VBox spacing="16" style="-fx-padding: 20 0 0 0;">
-                <HBox spacing="12" alignment="CENTER_LEFT">
+                <HBox fx:id="feature1" spacing="12" alignment="CENTER_LEFT">
                     <Circle radius="4" fill="#7C3AED"/>
                     <Label text="Controle total de receitas e despesas"
                            style="-fx-text-fill: #D4D4D8; -fx-font-size: 14px;"/>
                 </HBox>
-                <HBox spacing="12" alignment="CENTER_LEFT">
+                <HBox fx:id="feature2" spacing="12" alignment="CENTER_LEFT">
                     <Circle radius="4" fill="#6D28D9"/>
-                    <Label text="Análises e sugestões inteligentes com IA"
+                    <Label text="Análises inteligentes com IA"
                            style="-fx-text-fill: #D4D4D8; -fx-font-size: 14px;"/>
                 </HBox>
-                <HBox spacing="12" alignment="CENTER_LEFT">
+                <HBox fx:id="feature3" spacing="12" alignment="CENTER_LEFT">
                     <Circle radius="4" fill="#5B21B6"/>
                     <Label text="Relatórios detalhados e insights"
                            style="-fx-text-fill: #D4D4D8; -fx-font-size: 14px;"/>
                 </HBox>
             </VBox>
         </VBox>
-        <VBox alignment="CENTER" spacing="0" maxWidth="420">
+        <VBox fx:id="rightContent" alignment="CENTER" spacing="0" maxWidth="420">
 
             <VBox alignment="CENTER" spacing="28"
                   style="-fx-background-color: #27272A;
@@ -71,12 +73,13 @@
                 </VBox>
                 <VBox spacing="20" style="-fx-padding: 8 0 0 0;">
                     <VBox spacing="10">
-                        <Label text="Email"
+                        <Label text="Usuário"
                                style="-fx-text-fill: #E4E4E7;
                                       -fx-font-size: 13px;
                                       -fx-font-weight: 500;"/>
                         <TextField fx:id="usernameField"
                                    promptText="Digite seu nome de usuário"
+                                   styleClass="modern-input"
                                    style="-fx-background-color: #18181B;
                                           -fx-text-fill: #F4F4F5;
                                           -fx-prompt-text-fill: #71717A;
@@ -102,6 +105,7 @@
                         </HBox>
                         <PasswordField fx:id="passwordField"
                                        promptText="••••••••"
+                                       styleClass="modern-input"
                                        style="-fx-background-color: #18181B;
                                               -fx-text-fill: #F4F4F5;
                                               -fx-prompt-text-fill: #71717A;
@@ -128,6 +132,7 @@
                     <Button fx:id="loginButton"
                             text="Entrar"
                             onAction="#handleLogin"
+                            styleClass="modern-button"
                             style="-fx-background-color: #7C3AED;
                                    -fx-text-fill: white;
                                    -fx-font-size: 14px;

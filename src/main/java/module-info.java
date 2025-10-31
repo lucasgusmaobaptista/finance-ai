@@ -9,6 +9,7 @@ module me.lucasgusmao.financeai {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires jakarta.persistence;
+    requires org.kordamp.ikonli.materialdesign2;
     requires static lombok;
     requires spring.context;
     requires spring.data.jpa;
