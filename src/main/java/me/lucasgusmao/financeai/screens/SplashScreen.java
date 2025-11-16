@@ -1,7 +1,6 @@
-package me.lucasgusmao.financeai.view;
+package me.lucasgusmao.financeai.screens;
 
 import javafx.animation.*;
-import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -20,7 +19,7 @@ public class SplashScreen {
     private Stage splashStage;
     private Label statusLabel;
 
-    public void show() {
+    public void showAnimation() {
         splashStage = new Stage();
         splashStage.initStyle(StageStyle.TRANSPARENT);
 
@@ -44,22 +43,13 @@ public class SplashScreen {
         VBox content = new VBox(50);
         content.setAlignment(Pos.CENTER);
         content.setMaxWidth(600);
-        StackPane loaderContainer = createMinimalLoader();
+        StackPane loaderContainer = createAnimation();
         VBox logoBox = new VBox(12);
         logoBox.setAlignment(Pos.CENTER);
-        Label logoLabel = new Label("Financia Aí");
-        logoLabel.setStyle("""
-            -fx-font-size: 48px;
-            -fx-font-weight: 600;
-            -fx-text-fill: #E8E8E8;
-            -fx-letter-spacing: -1px;
-        """);
+        Label logoLabel = new Label("FinanCIA");
+        logoLabel.setStyle("-fx-font-size: 48px; -fx-font-weight: 600; -fx-text-fill: #E8E8E8; -fx-letter-spacing: -1px;");
         Label taglineLabel = new Label("Sua assistente financeira inteligente");
-        taglineLabel.setStyle("""
-            -fx-font-size: 13px;
-            -fx-text-fill: #8E8E93;
-            -fx-letter-spacing: 0.5px;
-        """);
+        taglineLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #8E8E93; -fx-letter-spacing: 0.5px;");
         FadeTransition logoFade = new FadeTransition(Duration.seconds(1.5), logoLabel);
         logoFade.setFromValue(0);
         logoFade.setToValue(1);
@@ -68,19 +58,12 @@ public class SplashScreen {
         logoBox.getChildren().addAll(logoLabel, taglineLabel);
 
         statusLabel = new Label("Inicializando");
-        statusLabel.setStyle("""
-            -fx-font-size: 12px;
-            -fx-text-fill: #636366;
-        """);
+        statusLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #636366;");
 
-        animateStatus();
+        animate();
 
-        Label versionLabel = new Label("v1.0 - Lucas Gusmão");
-        versionLabel.setStyle("""
-            -fx-font-size: 10px;
-            -fx-text-fill: #48484A;
-            -fx-padding: 30 0 0 0;
-        """);
+        Label versionLabel = new Label("P1/LP3 - Lucas Gusmão");
+        versionLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: #48484A; -fx-padding: 30 0 0 0;");
 
         content.getChildren().addAll(loaderContainer, logoBox, statusLabel, versionLabel);
         root.getChildren().addAll(background, circle1, circle2, content);
@@ -91,7 +74,7 @@ public class SplashScreen {
         splashStage.show();
     }
 
-    private StackPane createMinimalLoader() {
+    private StackPane createAnimation() {
         StackPane loader = new StackPane();
         loader.setPrefSize(120, 120);
 
@@ -125,7 +108,7 @@ public class SplashScreen {
         return loader;
     }
 
-    private void animateStatus() {
+    private void animate() {
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.seconds(0), e -> statusLabel.setText("Inicializando")),
                 new KeyFrame(Duration.seconds(0.5), e -> statusLabel.setText("Inicializando.")),
@@ -136,11 +119,7 @@ public class SplashScreen {
         timeline.play();
     }
 
-    public void updateStatus(String status) {
-        Platform.runLater(() -> statusLabel.setText(status));
-    }
-
-    public void close() {
+    public void closeAnimation() {
         if (splashStage != null) {
             FadeTransition fadeOut = new FadeTransition(
                     Duration.seconds(0.8),

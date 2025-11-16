@@ -1,7 +1,6 @@
-package me.lucasgusmao.financeai.view;
+package me.lucasgusmao.financeai.screens;
 
 import javafx.animation.*;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.effect.GaussianBlur;
@@ -21,7 +20,7 @@ public class TransitionScreen {
         this.onComplete = onComplete;
     }
 
-    public void show() {
+    public void showAnimation() {
         stage = new Stage();
         stage.initStyle(StageStyle.TRANSPARENT);
 
@@ -33,21 +32,12 @@ public class TransitionScreen {
         GaussianBlur blur = new GaussianBlur(50);
         circle1.setEffect(blur);
 
-        Label logo = new Label("FinanceAI");
-        logo.setStyle("""
-            -fx-font-size: 72px;
-            -fx-font-weight: 700;
-            -fx-text-fill: #F4F4F5;
-            -fx-letter-spacing: -2px;
-        """);
+        Label logo = new Label("FinanCIA");
+        logo.setStyle("-fx-font-size: 72px; -fx-font-weight: 700; -fx-text-fill: #F4F4F5; -fx-letter-spacing: -2px;");
         logo.setOpacity(0);
 
-        Label tagline = new Label("Preparando sua experiência...");
-        tagline.setStyle("""
-            -fx-font-size: 16px;
-            -fx-text-fill: #A1A1AA;
-            -fx-translate-y: 60px;
-        """);
+        Label tagline = new Label("Bem-vindo(a)!");
+        tagline.setStyle("-fx-font-size: 16px; -fx-text-fill: #A1A1AA; -fx-translate-y: 60px;");
         tagline.setOpacity(0);
         root.getChildren().addAll(circle1, logo, tagline);
 
@@ -55,10 +45,10 @@ public class TransitionScreen {
         scene.setFill(Color.TRANSPARENT);
         stage.setScene(scene);
         stage.show();
-        animateTransition(circle1, logo, tagline);
+        animation(circle1, logo, tagline);
     }
 
-    private void animateTransition(Circle circle, Label logo, Label tagline) {
+    private void animation(Circle circle, Label logo, Label tagline) {
         ScaleTransition circleScale = new ScaleTransition(Duration.seconds(1.5), circle);
         circleScale.setFromX(0);
         circleScale.setFromY(0);
@@ -90,14 +80,14 @@ public class TransitionScreen {
 
         parallel.setOnFinished(e -> {
             PauseTransition pause = new PauseTransition(Duration.seconds(1));
-            pause.setOnFinished(ev -> close());
+            pause.setOnFinished(ev -> closeAnimation());
             pause.play();
         });
 
         parallel.play();
     }
 
-    private void close() {
+    private void closeAnimation() {
         FadeTransition fadeOut = new FadeTransition(Duration.seconds(0.5), stage.getScene().getRoot());
         fadeOut.setFromValue(1);
         fadeOut.setToValue(0);
