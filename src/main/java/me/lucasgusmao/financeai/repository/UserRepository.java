@@ -1,6 +1,6 @@
 package me.lucasgusmao.financeai.repository;
 
-import me.lucasgusmao.financeai.model.User;
+import me.lucasgusmao.financeai.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

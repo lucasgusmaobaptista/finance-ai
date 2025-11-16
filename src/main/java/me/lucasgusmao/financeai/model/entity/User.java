@@ -1,4 +1,4 @@
-package me.lucasgusmao.financeai.model;
+package me.lucasgusmao.financeai.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
