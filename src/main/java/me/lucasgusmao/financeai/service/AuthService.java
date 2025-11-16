@@ -1,10 +1,9 @@
 package me.lucasgusmao.financeai.service;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import me.lucasgusmao.financeai.exceptions.custom.AlreadyExistsException;
-import me.lucasgusmao.financeai.model.User;
+import me.lucasgusmao.financeai.model.entity.User;
 import me.lucasgusmao.financeai.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,6 @@ public class AuthService {
     private final UserRepository repository;
     private final PasswordEncoder encoder;
     @Setter
-    @Getter
     private User currentUser;
 
     public User register(String name, String email, String password) {
@@ -46,6 +44,13 @@ public class AuthService {
         }
         this.currentUser = userFound;
         return userFound;
+    }
+
+    public User getCurrentUser() {
+        if (this.currentUser == null) {
+            throw new IllegalStateException("Nenhum usuário está autenticado no momento.");
+        }
+        return this.currentUser;
     }
 
     public void logout() {
