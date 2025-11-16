@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import java.net.URL?>
+
+<?import java.lang.String?>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="me.lucasgusmao.financeai.controller.MainController">
+    <BorderPane>
+
+        <top>
+            <HBox style="-fx-background-color: #0F0F11;; -fx-border-color: #3F3F46;  -fx-border-width: 0 0 0.5 0; -fx-padding: 20 32; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 2);"
+                  alignment="CENTER_LEFT"
+                  spacing="20">
+
+                <VBox spacing="2">
+                    <Label fx:id="pageTitle" text="Dashboard" style="-fx-font-size: 28px; -fx-font-weight: 700;  -fx-text-fill: #F4F4F5;"/>
+                    <Label fx:id="pageSubtitle" text="Visão geral das suas finanças"  style="-fx-text-fill: #71717A; -fx-font-size: 13px;"/>
+                </VBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <HBox spacing="16" alignment="CENTER">
+                    <StackPane styleClass="header-search-box">
+                        <HBox spacing="12" alignment="CENTER" style="-fx-padding: 0 16;">
+                            <FontIcon iconLiteral="mdi2m-magnify" iconSize="18" iconColor="#71717A"/>
+                            <TextField promptText="Buscar..." style="-fx-background-color: transparent; -fx-text-fill: #F4F4F5; -fx-prompt-text-fill: #71717A; -fx-border-width: 0; -fx-padding: 0; -fx-pref-width: 200;"/>
+                        </HBox>
+                    </StackPane>
+
+                    <StackPane styleClass="header-icon-box">
+                        <FontIcon iconLiteral="mdi2b-bell-outline" iconSize="20" iconColor="#A1A1AA"/>
+                        <Circle radius="4" fill="#EF4444" translateX="10" translateY="-10"/>
+                    </StackPane>
+
+                    <Separator orientation="VERTICAL" style="-fx-background-color: #3F3F46; -fx-pref-height: 32;"/>
+
+                    <HBox spacing="12" alignment="CENTER" styleClass="profile-box">
+                        <StackPane>
+                            <Circle radius="20" style="-fx-fill: linear-gradient(to bottom right, #7C3AED, #EC4899);"/>
+                            <Label fx:id="userInitials" text="?" style="-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: 700;"/>
+                        </StackPane>
+                        <StackPane>
+                            <Label fx:id="userName" text="Username" style="-fx-text-fill: #F4F4F5; -fx-font-size: 14px; -fx-font-weight: 600;"/>
+                        </StackPane>
+                        <FontIcon iconLiteral="mdi2c-chevron-down" iconSize="16" iconColor="#71717A"/>
+                    </HBox>
+                </HBox>
+            </HBox>
+        </top>
+
+
+        <center>
+
+            <StackPane fx:id="contentArea" style="-fx-background-color: #18181B;">
+                <StackPane fx:id="dashboardPane">
+                    <Circle radius="420" fill="radial-gradient(center 50% 50%, radius 100%, rgba(124, 58, 237, 0.06), transparent)" mouseTransparent="true" StackPane.alignment="TOP_LEFT" translateX="-180" translateY="-220"/>
+                    <Circle radius="380" fill="radial-gradient(center 50% 50%, radius 100%, rgba(236, 72, 153, 0.04), transparent)" mouseTransparent="true" StackPane.alignment="BOTTOM_RIGHT" translateX="200" translateY="180"/>
+
+                    <ScrollPane fitToWidth="true"
+                                fitToHeight="true"
+                                style="-fx-background-color: transparent;
+                       -fx-background: transparent;"
+                                hbarPolicy="NEVER">
+                        <VBox spacing="28" style="-fx-padding: 40 48;">
+                            <HBox spacing="24">
+                                <VBox spacing="20"
+                                      style="-fx-background-color: #27272A; -fx-background-radius: 18; -fx-padding: 28 26; -fx-border-color: #3F3F46; -fx-border-width: 1; -fx-border-radius: 18;" HBox.hgrow="ALWAYS">
+                                    <HBox alignment="CENTER_LEFT" spacing="18">
+                                        <StackPane style="-fx-background-color: rgba(34, 197, 94, 0.15); -fx-background-radius: 14; -fx-min-width: 56;  -fx-min-height: 56;  -fx-max-width: 56; -fx-max-height: 56;">
+                                            <FontIcon iconLiteral="mdi2t-trending-up" iconSize="30" iconColor="#22C55E"/>
+                                        </StackPane>
+                                        <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                            <Label text="Receitas" style="-fx-text-fill: #A1A1AA; -fx-font-size: 14px; -fx-font-weight: 500;"/>
+                                            <Label fx:id="incomeValue" text="R$ 0,00" style="-fx-text-fill: #F4F4F5; -fx-font-size: 34px; -fx-font-weight: 800; -fx-letter-spacing: -0.5px;"/>
+                                        </VBox>
+                                    </HBox>
+                                    <HBox spacing="10" alignment="CENTER_LEFT">
+                                        <Label fx:id="incomePercentage" style="-fx-background-color: rgba(34, 197, 94, 0.12); -fx-text-fill: #4ADE80; -fx-padding: 6 12; -fx-background-radius: 8; -fx-font-size: 13px; -fx-font-weight: 600;" text="↗ +0%"/>
+                                        <Label text="vs último mês" style="-fx-text-fill: #71717A; -fx-font-size: 13px;"/>
+                                    </HBox>
+                                </VBox>
+
+                                <VBox spacing="20" style="-fx-background-color: #27272A; -fx-background-radius: 18; -fx-padding: 28 26; -fx-border-color: #3F3F46; -fx-border-width: 1; -fx-border-radius: 18;"  HBox.hgrow="ALWAYS">
+                                    <HBox alignment="CENTER_LEFT" spacing="18">
+                                        <StackPane style="-fx-background-color: rgba(239, 68, 68, 0.15); -fx-background-radius: 14; -fx-min-width: 56; -fx-min-height: 56;-fx-max-width: 56;-fx-max-height: 56;">
+                                            <FontIcon iconLiteral="mdi2t-trending-down" iconSize="30" iconColor="#EF4444"/>
+                                        </StackPane>
+                                        <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                            <Label text="Despesas" style="-fx-text-fill: #A1A1AA; -fx-font-size: 14px;-fx-font-weight: 500;"/>
+                                            <Label fx:id="expenseValue" text="R$ 0,00" style="-fx-text-fill: #F4F4F5; -fx-font-size: 34px;  -fx-font-weight: 800; -fx-letter-spacing: -0.5px;"/>
+                                        </VBox>
+                                    </HBox>
+                                    <HBox spacing="10" alignment="CENTER_LEFT">
+                                        <Label fx:id="expensePercentage" style="-fx-background-color: rgba(239, 68, 68, 0.12);-fx-text-fill: #FCA5A5; -fx-padding: 6 12; -fx-background-radius: 8; -fx-font-size: 13px; -fx-font-weight: 600;" text="↘ +0%"/>
+                                        <Label text="vs último mês" style="-fx-text-fill: #71717A; -fx-font-size: 13px;"/>
+                                    </HBox>
+                                </VBox>
+
+                                <VBox spacing="20" style="--fx-background-color: linear-gradient(#7C3AED, #18181B); -fx-background-radius: 18;  -fx-padding: 28 26; -fx-effect: dropshadow(gaussian, rgba(124, 58, 237, 0.4), 20, 0.3, 0, 8);" HBox.hgrow="ALWAYS">
+                                    <HBox alignment="CENTER_LEFT" spacing="18">
+                                        <StackPane style="-fx-background-color: rgba(255, 255, 255, 0.2); -fx-background-radius: 14; -fx-min-width: 56;-fx-min-height: 56; -fx-max-width: 56; -fx-max-height: 56;">
+                                            <FontIcon iconLiteral="mdi2w-wallet" iconSize="30" iconColor="white"/>
+                                        </StackPane>
+                                        <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                            <Label text="Saldo Total"  style="-fx-text-fill: rgba(255,255,255,0.9); -fx-font-size: 14px; -fx-font-weight: 500;"/>
+                                            <Label fx:id="balanceValue" text="R$ 0,00" style="-fx-text-fill: white; -fx-font-size: 34px; -fx-font-weight: 800; -fx-letter-spacing: -0.5px;"/>
+                                        </VBox>
+                                    </HBox>
+                                    <Label text="💎 Economia positiva!" style="-fx-text-fill: white;-fx-font-size: 14px; -fx-font-weight: 600;"/>
+                                </VBox>
+                            </HBox>
+
+                            <HBox spacing="24">
+                                <VBox spacing="24" style="-fx-background-color: #27272A; -fx-background-radius: 18; -fx-padding: 32 28; -fx-border-color: #3F3F46; -fx-border-width: 1; -fx-border-radius: 18;" HBox.hgrow="ALWAYS">
+                                    <HBox alignment="CENTER_LEFT">
+                                        <VBox spacing="6">
+                                            <Label text="Fluxo Financeiro" style="-fx-text-fill: #F4F4F5; -fx-font-size: 22px; -fx-font-weight: 700;"/>
+                                            <Label text="Análise dos últimos 6 meses" style="-fx-text-fill: #71717A; -fx-font-size: 14px;"/>
+                                        </VBox>
+                                        <Region HBox.hgrow="ALWAYS"/>
+                                        <HBox spacing="10">
+                                            <Button text="6M" style="-fx-background-color: rgba(124, 58, 237, 0.15); -fx-text-fill: #A78BFA; -fx-font-size: 13px; -fx-font-weight: 600; -fx-background-radius: 10; -fx-cursor: hand; -fx-padding: 8 18; -fx-border-color: rgba(124, 58, 237, 0.3); -fx-border-width: 1; -fx-border-radius: 10;"/>
+                                            <Button text="1A" style="-fx-background-color: transparent; -fx-text-fill: #71717A; -fx-font-size: 13px; -fx-font-weight: 600; -fx-background-radius: 10; -fx-cursor: hand; -fx-padding: 8 18; -fx-border-color: #3F3F46; -fx-border-width: 1; -fx-border-radius: 10;"/>
+                                            <Button text="Tudo" style="-fx-background-color: transparent; -fx-text-fill: #71717A; -fx-font-size: 13px; -fx-font-weight: 600; -fx-background-radius: 10;  -fx-cursor: hand; -fx-padding: 8 18; -fx-border-color: #3F3F46; -fx-border-width: 1; -fx-border-radius: 10;"/>
+                                        </HBox>
+                                    </HBox>
+
+                                    <StackPane fx:id="chartContainer"
+                                               style="-fx-pref-height: 360; -fx-background-color: #18181B; -fx-background-radius: 16; -fx-border-color: #3F3F46; -fx-border-radius: 16; -fx-border-width: 1;">
+                                        <VBox alignment="CENTER" spacing="16">
+                                            <FontIcon iconLiteral="mdi2c-chart-areaspline" iconSize="72" iconColor="#3F3F46"/>
+                                        </VBox>
+                                    </StackPane>
+                                </VBox>
+
+                                <VBox spacing="24"
+                                      style="-fx-background-color: #27272A; -fx-background-radius: 18; -fx-padding: 32 28; -fx-border-color: #3F3F46; -fx-border-width: 1; -fx-border-radius: 18; -fx-pref-width: 440;">
+                                    <Label text="Gastos por Categoria"
+                                           style="-fx-text-fill: #F4F4F5; -fx-font-size: 22px; -fx-font-weight: 700;"/>
+
+                                    <VBox spacing="18">
+                                        <HBox spacing="16" alignment="CENTER_LEFT"
+                                              style="-fx-background-color: #18181B; -fx-background-radius: 14; -fx-padding: 18 20; -fx-border-color: #3F3F46; -fx-border-width: 1; -fx-border-radius: 14;">
+                                        </HBox>
+                                    </VBox>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+                    </ScrollPane>
+                </StackPane>
+            </StackPane>
+        </center>
+
+        <left>
+            <VBox fx:id="sidebar"
+                  style="-fx-background-color: #0F0F11; -fx-border-color: #3F3F46; -fx-border-width: 0 1 0 0; -fx-pref-width: 85px;"
+                  alignment="TOP_CENTER"
+                  spacing="8">
+
+                <padding>
+                    <Insets top="24" bottom="24" left="8" right="8"/>
+                </padding>
+
+                <StackPane style="-fx-background-color: linear-gradient(to bottom right, #7C3AED, #EC4899);
+                          -fx-background-radius: 18;
+                          -fx-pref-width: 56;
+                          -fx-pref-height: 56;
+                          -fx-cursor: hand;">
+                    <Label text="F"
+                           style="-fx-text-fill: white;
+                          -fx-font-size: 28px;
+                          -fx-font-weight: 800;"/>
+                </StackPane>
+
+                <Region style="-fx-pref-height: 24;"/>
+
+                <VBox spacing="8" alignment="TOP_CENTER">
+                    <VBox alignment="CENTER" spacing="4">
+                        <FontIcon iconLiteral="mdi2v-view-dashboard" iconSize="24" iconColor="#A78BFA"/>
+                        <Label text="Home" style="-fx-text-fill: #A78BFA; -fx-font-size: 10px; -fx-font-weight: 600;"/>
+                    </VBox>
+
+                    <VBox alignment="CENTER" spacing="4" onMouseClicked="#handleNavigateToTransactions">
+                        <FontIcon iconLiteral="mdi2c-credit-card-multiple" iconSize="24" iconColor="#71717A"/>
+                        <Label text="Transações"
+                               style="-fx-text-fill: #71717A; -fx-font-size: 10px; -fx-font-weight: 600;"/>
+                    </VBox>
+
+                    <VBox alignment="CENTER" spacing="4">
+                        <FontIcon iconLiteral="mdi2t-tag-multiple" iconSize="24" iconColor="#71717A"/>
+                        <Label text="Categorias"
+                               style="-fx-text-fill: #71717A; -fx-font-size: 10px; -fx-font-weight: 600;"/>
+                    </VBox>
+
+                    <VBox alignment="CENTER" spacing="4">
+                        <FontIcon iconLiteral="mdi2c-chart-line" iconSize="24" iconColor="#71717A"/>
+                        <Label text="Relatórios"
+                               style="-fx-text-fill: #71717A; -fx-font-size: 10px; -fx-font-weight: 600;"/>
+                    </VBox>
+
+                    <VBox alignment="CENTER" spacing="4">
+                        <FontIcon iconLiteral="mdi2t-target" iconSize="24" iconColor="#71717A"/>
+                        <Label text="Metas" style="-fx-text-fill: #71717A; -fx-font-size: 10px; -fx-font-weight: 600;"/>
+                    </VBox>
+                </VBox>
+
+                <Region VBox.vgrow="ALWAYS"/>
+                <VBox alignment="CENTER" spacing="4" styleClass="sidebar-add-item"
+                      onMouseClicked="#handleOpenAddModal"
+                      style="-fx-cursor: hand;">
+                    <FontIcon iconLiteral="mdi2p-plus-circle" iconSize="32" iconColor="white"/>
+                    <Label text="Adicionar" style="-fx-text-fill: white; -fx-font-size: 10px; -fx-font-weight: 600;"/>
+                </VBox>
+            </VBox>
+        </left>
+    </BorderPane>
+    <StackPane fx:id="modalOverlay" visible="false" managed="false" style="-fx-background-color: rgba(0, 0, 0, 0.6);">
+    </StackPane>
+</StackPane>
+
