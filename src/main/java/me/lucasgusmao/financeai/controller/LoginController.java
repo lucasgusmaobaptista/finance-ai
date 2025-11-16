@@ -9,11 +9,12 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
-import me.lucasgusmao.financeai.HelloApplication;
-import me.lucasgusmao.financeai.model.User;
+import me.lucasgusmao.financeai.FinanceApplication;
+import me.lucasgusmao.financeai.model.entity.User;
 import me.lucasgusmao.financeai.service.AuthService;
 import me.lucasgusmao.financeai.style.animation.AnimationFX;
 import me.lucasgusmao.financeai.style.animation.ParallaxFX;
+import me.lucasgusmao.financeai.screens.TransitionScreen;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -44,9 +45,6 @@ public class LoginController {
 
     @FXML
     private Circle backgroundCircle2;
-
-    @FXML
-    private VBox leftContent;
 
     @FXML
     private VBox rightContent;
@@ -135,13 +133,13 @@ public class LoginController {
     private void handleRegister() {
         try {
             FXMLLoader loader = new FXMLLoader(
-                    HelloApplication.class.getResource("register-view.fxml")
+                    FinanceApplication.class.getResource("register-view.fxml")
             );
             loader.setControllerFactory(springContext::getBean);
             Scene scene = new Scene(loader.load(), 1400, 900);
             Stage stage = (Stage) registerLink.getScene().getWindow();
             stage.setScene(scene);
-            stage.setTitle("FinanceAI - Cadastro");
+            stage.setTitle("FinanCIA - Cadastro");
         } catch (Exception e) {
             showError("Erro ao abrir tela de cadastro");
             e.printStackTrace();
@@ -153,18 +151,18 @@ public class LoginController {
             Stage currentStage = (Stage) loginButton.getScene().getWindow();
             currentStage.hide();
 
-            me.lucasgusmao.financeai.view.TransitionScreen transition =
-                    new me.lucasgusmao.financeai.view.TransitionScreen(() -> {
+            TransitionScreen transition =
+                    new TransitionScreen(() -> {
                         javafx.application.Platform.runLater(() -> {
                             try {
                                 FXMLLoader loader = new FXMLLoader(
-                                        HelloApplication.class.getResource("main-view.fxml")
+                                        FinanceApplication.class.getResource("main-view.fxml")
                                 );
                                 loader.setControllerFactory(springContext::getBean);
 
                                 Scene scene = new Scene(loader.load(), 1600, 900);
                                 currentStage.setScene(scene);
-                                currentStage.setTitle("FinanceAI - Dashboard");
+                                currentStage.setTitle("FinanCIA - Dashboard");
                                 currentStage.show();
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -172,7 +170,7 @@ public class LoginController {
                         });
                     });
 
-            transition.show();
+            transition.showAnimation();
         } catch (Exception e) {
             showError("Erro ao carregar tela principal");
             e.printStackTrace();
