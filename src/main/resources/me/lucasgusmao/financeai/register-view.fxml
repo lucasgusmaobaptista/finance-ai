@@ -134,7 +134,7 @@
                                               -fx-font-weight: 500;"/>
                                 <TextField fx:id="nameField"
                                            promptText="Lucas Gusmão Baptista"
-                                           styleClass="modern-input"
+                                           styleClass=""
                                            style="-fx-background-color: #18181B;
                                                   -fx-text-fill: #F4F4F5;
                                                   -fx-prompt-text-fill: #71717A;
@@ -153,7 +153,7 @@
                                               -fx-font-weight: 500;"/>
                                 <TextField fx:id="emailField"
                                            promptText="seu@email.com"
-                                           styleClass="modern-input"
+                                           styleClass=""
                                            style="-fx-background-color: #18181B;
                                                   -fx-text-fill: #F4F4F5;
                                                   -fx-prompt-text-fill: #71717A;
@@ -172,7 +172,6 @@
                                               -fx-font-weight: 500;"/>
                                 <PasswordField fx:id="passwordField"
                                                promptText="Mínimo 6 caracteres"
-                                               styleClass="modern-input"
                                                style="-fx-background-color: #18181B;
                                                       -fx-text-fill: #F4F4F5;
                                                       -fx-prompt-text-fill: #71717A;
@@ -191,7 +190,6 @@
                                               -fx-font-weight: 500;"/>
                                 <PasswordField fx:id="confirmPasswordField"
                                                promptText="Digite novamente"
-                                               styleClass="modern-input"
                                                style="-fx-background-color: #18181B;
                                                       -fx-text-fill: #F4F4F5;
                                                       -fx-prompt-text-fill: #71717A;
@@ -216,7 +214,6 @@
                             <Button fx:id="registerButton"
                                     text="Criar Conta"
                                     onAction="#handleRegister"
-                                    styleClass="modern-button"
                                     style="-fx-background-color: #7C3AED;
                                            -fx-text-fill: white;
                                            -fx-font-size: 14px;
@@ -238,16 +235,9 @@
                                            style="-fx-background-color: #3F3F46; -fx-padding: 0.5 0;"/>
                             </HBox>
                             <HBox alignment="CENTER" spacing="6">
-                                <Label text="Já tem uma conta?"
-                                       style="-fx-text-fill: #A1A1AA;
+                                <Label text="Já tem uma conta?" style="-fx-text-fill: #A1A1AA;
                                               -fx-font-size: 13px;"/>
-                                <Hyperlink fx:id="loginLink"
-                                           text="Fazer login"
-                                           onAction="#handleBackToLogin"
-                                           style="-fx-text-fill: #7C3AED;
-                                                  -fx-font-size: 13px;
-                                                  -fx-font-weight: 600;
-                                                  -fx-underline: false;"/>
+                                <Hyperlink fx:id="loginLink" text="Fazer login" onAction="#handleBackToLogin" style="-fx-text-fill: #7C3AED; -fx-font-size: 13px;  -fx-font-weight: 600; -fx-underline: false;"/>
                             </HBox>
                         </VBox>
                     </VBox>

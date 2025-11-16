@@ -9,9 +9,6 @@
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="me.lucasgusmao.financeai.controller.LoginController"
            style="-fx-background-color: #18181B;">
-    <stylesheets>
-        <URL value="@style/styles.css"/>
-    </stylesheets>
     <Circle fx:id="backgroundCircle1" radius="400" layoutX="-150" layoutY="-200"
             fill="radial-gradient(center 50% 50%, radius 100%, rgba(107, 79, 187, 0.04), transparent)"
             mouseTransparent="true"/>
@@ -22,146 +19,54 @@
     <HBox alignment="CENTER" spacing="60" maxWidth="1000">
         <VBox fx:id="leftContent" alignment="CENTER_LEFT" spacing="24" maxWidth="400">
             <VBox spacing="12">
-                <Label fx:id="titleLabel"
-                       text="FinanceAI"
-                       style="-fx-font-size: 42px;
-                              -fx-font-weight: 600;
-                              -fx-text-fill: #F4F4F5;
-                              -fx-letter-spacing: -1px;"/>
-                <Label fx:id="subtitleLabel"
-                       text="Gerencie suas finanças de forma inteligente"
-                       wrapText="true"
-                       style="-fx-font-size: 16px;
-                              -fx-text-fill: #A1A1AA;
-                              -fx-line-spacing: 4px;"/>
+                <Label fx:id="titleLabel" text="FinanCIA" style="-fx-font-size: 42px; -fx-font-weight: 600; -fx-text-fill: #F4F4F5; -fx-letter-spacing: -1px;"/>
+                <Label fx:id="subtitleLabel" text="Gerencie suas finanças de forma inteligente" wrapText="true" style="-fx-font-size: 16px; -fx-text-fill: #A1A1AA; -fx-line-spacing: 4px;"/>
             </VBox>
             <VBox spacing="16" style="-fx-padding: 20 0 0 0;">
                 <HBox fx:id="feature1" spacing="12" alignment="CENTER_LEFT">
                     <Circle radius="4" fill="#7C3AED"/>
-                    <Label text="Controle total de receitas e despesas"
-                           style="-fx-text-fill: #D4D4D8; -fx-font-size: 14px;"/>
+                    <Label text="Controle total de receitas e despesas" style="-fx-text-fill: #D4D4D8; -fx-font-size: 14px;"/>
                 </HBox>
                 <HBox fx:id="feature2" spacing="12" alignment="CENTER_LEFT">
                     <Circle radius="4" fill="#6D28D9"/>
-                    <Label text="Análises inteligentes com IA"
-                           style="-fx-text-fill: #D4D4D8; -fx-font-size: 14px;"/>
+                    <Label text="Análises inteligentes com IA" style="-fx-text-fill: #D4D4D8; -fx-font-size: 14px;"/>
                 </HBox>
                 <HBox fx:id="feature3" spacing="12" alignment="CENTER_LEFT">
                     <Circle radius="4" fill="#5B21B6"/>
-                    <Label text="Relatórios detalhados e insights"
-                           style="-fx-text-fill: #D4D4D8; -fx-font-size: 14px;"/>
+                    <Label text="Relatórios detalhados e insights" style="-fx-text-fill: #D4D4D8; -fx-font-size: 14px;"/>
                 </HBox>
             </VBox>
         </VBox>
         <VBox fx:id="rightContent" alignment="CENTER" spacing="0" maxWidth="420">
 
-            <VBox alignment="CENTER" spacing="28"
-                  style="-fx-background-color: #27272A;
-                         -fx-background-radius: 16;
-                         -fx-padding: 48 40 48 40;
-                         -fx-border-color: #3F3F46;
-                         -fx-border-width: 1;
-                         -fx-border-radius: 16;">
+            <VBox alignment="CENTER" spacing="28" style="-fx-background-color: #27272A; -fx-background-radius: 16; -fx-padding: 48 40 48 40; -fx-border-color: #3F3F46; -fx-border-width: 1; -fx-border-radius: 16;">
                 <VBox alignment="CENTER" spacing="8">
-                    <Label text="Bem-vindo"
-                           style="-fx-font-size: 28px;
-                                  -fx-font-weight: 600;
-                                  -fx-text-fill: #F4F4F5;"/>
-                    <Label text="Entre com sua conta"
-                           style="-fx-font-size: 14px;
-                                  -fx-text-fill: #A1A1AA;"/>
+                    <Label text="Bem-vindo" style="-fx-font-size: 28px; -fx-font-weight: 600; -fx-text-fill: #F4F4F5;"/>
+                    <Label text="Entre com sua conta" style="-fx-font-size: 14px; -fx-text-fill: #A1A1AA;"/>
                 </VBox>
                 <VBox spacing="20" style="-fx-padding: 8 0 0 0;">
                     <VBox spacing="10">
-                        <Label text="Usuário"
-                               style="-fx-text-fill: #E4E4E7;
-                                      -fx-font-size: 13px;
-                                      -fx-font-weight: 500;"/>
-                        <TextField fx:id="usernameField"
-                                   promptText="Digite seu nome de usuário"
-                                   styleClass="modern-input"
-                                   style="-fx-background-color: #18181B;
-                                          -fx-text-fill: #F4F4F5;
-                                          -fx-prompt-text-fill: #71717A;
-                                          -fx-background-radius: 10;
-                                          -fx-border-color: #3F3F46;
-                                          -fx-border-radius: 10;
-                                          -fx-border-width: 1.5;
-                                          -fx-padding: 13 16;
-                                          -fx-font-size: 14px;
-                                          -fx-pref-width: 340px;"/>
+                        <Label text="Usuário" style="-fx-text-fill: #E4E4E7; -fx-font-size: 13px; -fx-font-weight: 500;"/>
+                        <TextField fx:id="usernameField" promptText="Digite seu nome de usuário" styleClass="modern-input" style="-fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-prompt-text-fill: #71717A; -fx-background-radius: 10; -fx-border-color: #3F3F46; -fx-border-radius: 10; -fx-border-width: 1.5; -fx-padding: 13 16; -fx-font-size: 14px; -fx-pref-width: 340px;"/>
                     </VBox>
                     <VBox spacing="10">
                         <HBox alignment="CENTER_LEFT">
-                            <Label text="Senha"
-                                   style="-fx-text-fill: #E4E4E7;
-                                          -fx-font-size: 13px;
-                                          -fx-font-weight: 500;"/>
+                            <Label text="Senha" style="-fx-text-fill: #E4E4E7; -fx-font-size: 13px; -fx-font-weight: 500;"/>
                             <Region HBox.hgrow="ALWAYS"/>
-                            <Hyperlink text="Esqueceu a senha?"
-                                       style="-fx-text-fill: #7C3AED;
-                                              -fx-font-size: 12px;
-                                              -fx-underline: false;"/>
+                            <Hyperlink text="Esqueceu a senha?" style="-fx-text-fill: #7C3AED; -fx-font-size: 12px; -fx-underline: false;"/>
                         </HBox>
-                        <PasswordField fx:id="passwordField"
-                                       promptText="••••••••"
-                                       styleClass="modern-input"
-                                       style="-fx-background-color: #18181B;
-                                              -fx-text-fill: #F4F4F5;
-                                              -fx-prompt-text-fill: #71717A;
-                                              -fx-background-radius: 10;
-                                              -fx-border-color: #3F3F46;
-                                              -fx-border-radius: 10;
-                                              -fx-border-width: 1.5;
-                                              -fx-padding: 13 16;
-                                              -fx-font-size: 14px;
-                                              -fx-pref-width: 340px;"/>
+                        <PasswordField fx:id="passwordField" promptText="••••••••" styleClass="modern-input" style="-fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-prompt-text-fill: #71717A; -fx-background-radius: 10; -fx-border-color: #3F3F46; -fx-border-radius: 10; -fx-border-width: 1.5; -fx-padding: 13 16; -fx-font-size: 14px; -fx-pref-width: 340px;"/>
                     </VBox>
-                    <Label fx:id="errorLabel"
-                           visible="false"
-                           wrapText="true"
-                           maxWidth="340"
-                           style="-fx-text-fill: #FCA5A5;
-                                  -fx-font-size: 12px;
-                                  -fx-background-color: rgba(252, 165, 165, 0.08);
-                                  -fx-background-radius: 8;
-                                  -fx-padding: 11 14;
-                                  -fx-border-color: rgba(252, 165, 165, 0.2);
-                                  -fx-border-width: 1;
-                                  -fx-border-radius: 8;"/>
-                    <Button fx:id="loginButton"
-                            text="Entrar"
-                            onAction="#handleLogin"
-                            styleClass="modern-button"
-                            style="-fx-background-color: #7C3AED;
-                                   -fx-text-fill: white;
-                                   -fx-font-size: 14px;
-                                   -fx-font-weight: 600;
-                                   -fx-background-radius: 10;
-                                   -fx-cursor: hand;
-                                   -fx-pref-width: 340px;
-                                   -fx-pref-height: 44px;"/>
+                    <Label fx:id="errorLabel" visible="false" wrapText="true" maxWidth="340" style="-fx-text-fill: #FCA5A5; -fx-font-size: 12px; -fx-background-color: rgba(252, 165, 165, 0.08); -fx-background-radius: 8; -fx-padding: 11 14; -fx-border-color: rgba(252, 165, 165, 0.2); -fx-border-width: 1; -fx-border-radius: 8;"/>
+                    <Button fx:id="loginButton" text="Entrar" onAction="#handleLogin" styleClass="modern-button" style="-fx-background-color: #7C3AED; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: 600; -fx-background-radius: 10; -fx-cursor: hand; -fx-pref-width: 340px; -fx-pref-height: 44px;"/>
                     <HBox alignment="CENTER" spacing="12" style="-fx-padding: 8 0;">
-                        <Separator HBox.hgrow="ALWAYS"
-                                   style="-fx-background-color: #3F3F46; -fx-padding: 0.5 0;"/>
-                        <Label text="OU"
-                               style="-fx-text-fill: #71717A;
-                                      -fx-font-size: 11px;
-                                      -fx-font-weight: 600;"/>
-                        <Separator HBox.hgrow="ALWAYS"
-                                   style="-fx-background-color: #3F3F46; -fx-padding: 0.5 0;"/>
+                        <Separator HBox.hgrow="ALWAYS" style="-fx-background-color: #3F3F46; -fx-padding: 0.5 0;"/>
+                        <Label text="OU" style="-fx-text-fill: #71717A; -fx-font-size: 11px; -fx-font-weight: 600;"/>
+                        <Separator HBox.hgrow="ALWAYS" style="-fx-background-color: #3F3F46; -fx-padding: 0.5 0;"/>
                     </HBox>
                     <HBox alignment="CENTER" spacing="6">
-                        <Label text="Não tem uma conta?"
-                               style="-fx-text-fill: #A1A1AA;
-                                      -fx-font-size: 13px;"/>
-                        <Hyperlink fx:id="registerLink"
-                                   text="Criar conta"
-                                   onAction="#handleRegister"
-                                   style="-fx-text-fill: #7C3AED;
-                                          -fx-font-size: 13px;
-                                          -fx-font-weight: 600;
-                                          -fx-underline: false;"/>
+                        <Label text="Não tem uma conta?" style="-fx-text-fill: #A1A1AA; -fx-font-size: 13px;"/>
+                        <Hyperlink fx:id="registerLink" text="Criar conta" onAction="#handleRegister" style="-fx-text-fill: #7C3AED; -fx-font-size: 13px; -fx-font-weight: 600; -fx-underline: false;"/>
                     </HBox>
                 </VBox>
             </VBox>
