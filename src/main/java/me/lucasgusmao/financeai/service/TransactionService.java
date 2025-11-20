@@ -66,8 +66,8 @@ public class TransactionService {
         return repository.findByUserIdAndNameLikeIgnoreCase(currentUser.getId(), name);
     }
 
-    public List<Transaction> getByTypeAndAmountBetween(CategoryType type, BigDecimal minAmount, BigDecimal maxAmount) {
+    public List<Transaction> getByAndAmountBetween(BigDecimal minAmount, BigDecimal maxAmount) {
         User currentUser = authService.getCurrentUser();
-        return repository.findByUserIdAndCategoryTypeAndAmountBetween(currentUser.getId(), type, minAmount, maxAmount);
+        return repository.findByUserIdAndAmountBetween(currentUser.getId(), minAmount, maxAmount);
     }
 }

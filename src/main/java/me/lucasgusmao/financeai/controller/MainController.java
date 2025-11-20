@@ -209,6 +209,69 @@ public class MainController {
         loadCategoriesView();
     }
 
+    private void handleEditTransaction(Transaction transaction) {
+        openEditTransactionForm(transaction);
+    }
+
+    private void handleDeleteTransaction(Transaction transaction) {
+        Stage confirmStage = new Stage();
+        confirmStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+        confirmStage.initStyle(StageStyle.TRANSPARENT);
+        confirmStage.initOwner(sidebar.getScene().getWindow());
+
+        VBox confirmContent = new VBox(24);
+        confirmContent.setAlignment(Pos.CENTER);
+        confirmContent.setStyle("-fx-background-color: #27272A; -fx-background-radius: 16; -fx-padding: 40; -fx-border-color: #3F3F46; -fx-border-width: 1; -fx-border-radius: 16; -fx-max-width: 420;");
+
+        Label icon = new Label("⚠️");
+        icon.setStyle("-fx-font-size: 48px;");
+
+        Label title = new Label("Confirmar Exclusão");
+        title.setStyle("-fx-text-fill: #F4F4F5; -fx-font-size: 24px; -fx-font-weight: 700;");
+
+        Label message = new Label("Tem certeza que deseja excluir a transação \"" + transaction.getName() + "\"?");
+        message.setStyle("-fx-text-fill: #A1A1AA; -fx-font-size: 14px; -fx-text-alignment: center;");
+        message.setWrapText(true);
+        message.setMaxWidth(340);
+        message.setAlignment(Pos.CENTER);
+
+        HBox buttons = new HBox(12);
+        buttons.setAlignment(Pos.CENTER);
+
+        Button cancelBtn = new Button("Cancelar");
+        cancelBtn.setPrefHeight(44);
+        cancelBtn.setPrefWidth(160);
+        cancelBtn.setStyle("-fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-font-size: 14px; -fx-font-weight: 600; -fx-background-radius: 10; -fx-border-color: #3F3F46; -fx-border-width: 1.5; -fx-border-radius: 10; -fx-cursor: hand;");
+        cancelBtn.setOnAction(e -> confirmStage.close());
+
+        Button deleteBtn = new Button("Excluir");
+        deleteBtn.setPrefHeight(44);
+        deleteBtn.setPrefWidth(160);
+        deleteBtn.setStyle("-fx-background-color: #EF4444; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: 600; -fx-background-radius: 10; -fx-cursor: hand;");
+        deleteBtn.setOnAction(e -> {
+            try {
+                transactionService.delete(transaction.getId());
+                showToast("Transação excluída com sucesso!", true);
+                confirmStage.close();
+                loadTransactionsView();
+            } catch (Exception ex) {
+                showToast("Erro ao excluir transação: " + ex.getMessage(), false);
+            }
+        });
+
+        buttons.getChildren().addAll(cancelBtn, deleteBtn);
+        confirmContent.getChildren().addAll(icon, title, message, buttons);
+
+        StackPane root = new StackPane(confirmContent);
+        root.setStyle("-fx-background-color: transparent;");
+        root.setPadding(new Insets(50));
+
+        Scene scene = new Scene(root);
+        scene.setFill(Color.TRANSPARENT);
+        confirmStage.setScene(scene);
+        confirmStage.showAndWait();
+    }
+
     private void loadDashboardData() {
         try {
             List<Transaction> allTransactions = transactionService.getAll();
@@ -564,6 +627,156 @@ public class MainController {
         System.out.println("janela fechou");
     }
 
+    private void openEditTransactionForm(Transaction transaction) {
+        Stage formStage = new Stage();
+        formStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+        formStage.initStyle(javafx.stage.StageStyle.TRANSPARENT);
+        formStage.initOwner(sidebar.getScene().getWindow());
+
+        javafx.scene.effect.BoxBlur blur = new javafx.scene.effect.BoxBlur(10, 10, 3);
+        contentArea.setEffect(blur);
+
+        VBox formContent = new VBox(28);
+        formContent.setAlignment(javafx.geometry.Pos.TOP_CENTER);
+        formContent.setStyle("-fx-background-color: #27272A; -fx-background-radius: 16; -fx-padding: 48 40; -fx-border-color: #3F3F46; fx-border-width: 1; -fx-border-radius: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 40, 0, 0, 10);-fx-max-width: 480;");
+
+        VBox header = new VBox(8);
+        header.setAlignment(javafx.geometry.Pos.CENTER);
+
+        Label title = new Label("Editar Transação");
+        title.setStyle("-fx-text-fill: #F4F4F5; -fx-font-size: 28px; -fx-font-weight: 600; -fx-letter-spacing: -0.5px;");
+
+        Label subtitle = new Label("Atualize os dados da transação");
+        subtitle.setStyle("-fx-text-fill: #A1A1AA; -fx-font-size: 13px;");
+        subtitle.setWrapText(true);
+        subtitle.setMaxWidth(380);
+        subtitle.setAlignment(javafx.geometry.Pos.CENTER);
+
+        header.getChildren().addAll(title, subtitle);
+
+        VBox fieldsContainer = new VBox(20);
+        fieldsContainer.setStyle("-fx-padding: 8 0 0 0;");
+
+        VBox nameBox = new VBox(10);
+        Label nameLabel = new Label("Nome *");
+        nameLabel.setStyle("-fx-text-fill: #E4E4E7; -fx-font-size: 13px; -fx-font-weight: 500;");
+
+        TextField nameField = new TextField(transaction.getName());
+        nameField.setStyle("-fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-prompt-text-fill: #71717A; -fx-background-radius: 10; -fx-border-color: #3F3F46; -fx-border-radius: 10; -fx-border-width: 1.5; -fx-padding: 13 16; -fx-font-size: 14px; -fx-pref-width: 400px;");
+        nameBox.getChildren().addAll(nameLabel, nameField);
+
+        VBox amountBox = new VBox(10);
+        Label amountLabel = new Label("Valor *");
+        amountLabel.setStyle("-fx-text-fill: #E4E4E7; -fx-font-size: 13px; -fx-font-weight: 500;");
+
+        TextField amountField = new TextField(transaction.getAmount().toString());
+        amountField.setStyle("-fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-prompt-text-fill: #71717A; -fx-background-radius: 10; -fx-border-color: #3F3F46; -fx-border-radius: 10; -fx-border-width: 1.5; -fx-padding: 13 16; -fx-font-size: 14px; -fx-pref-width: 400px;");
+        amountBox.getChildren().addAll(amountLabel, amountField);
+
+        VBox categoryBox = new VBox(10);
+        Label categoryLabel = new Label("Categoria *");
+        categoryLabel.setStyle("-fx-text-fill: #E4E4E7; -fx-font-size: 13px; -fx-font-weight: 500;");
+
+        ComboBox<Category> categoryCombo = new ComboBox<>();
+        categoryCombo.setStyle("-fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-background-radius: 10; -fx-border-color: #3F3F46; -fx-border-radius: 10; -fx-border-width: 1.5; -fx-padding: 8 16; -fx-font-size: 14px; -fx-pref-width: 400px;");
+
+        try {
+            List<Category> categories = categoryService.getAll();
+            categoryCombo.getItems().addAll(categories);
+            categoryCombo.setValue(transaction.getCategory());
+
+            categoryCombo.setButtonCell(new ListCell<Category>() {
+                @Override
+                protected void updateItem(Category item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getName());
+                        setStyle("-fx-text-fill: #F4F4F5; -fx-background-color: #18181B;");
+                    }
+                }
+            });
+            categoryCombo.setCellFactory(lv -> new ListCell<Category>() {
+                @Override
+                protected void updateItem(Category item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getName());
+                        setStyle("-fx-text-fill: #F4F4F5; -fx-background-color: #18181B; -fx-padding: 8 16;");
+                    }
+                }
+            });
+        } catch (Exception ex) {
+            showToast("Erro ao carregar categorias: " + ex.getMessage(), false);
+        }
+
+        categoryBox.getChildren().addAll(categoryLabel, categoryCombo);
+
+        VBox notesBox = new VBox(10);
+        Label notesLabel = new Label("Notas");
+        notesLabel.setStyle("-fx-text-fill: #E4E4E7; -fx-font-size: 13px; -fx-font-weight: 500;");
+
+        TextArea notesField = new TextArea(transaction.getNotes() != null ? transaction.getNotes() : "");
+        notesField.setPrefRowCount(3);
+        notesField.setWrapText(true);
+        notesField.setStyle("-fx-control-inner-background: #18181B; -fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-prompt-text-fill: #71717A; -fx-background-radius: 10; -fx-border-color: #3F3F46; -fx-border-radius: 10; -fx-border-width: 1.5; -fx-padding: 13 16; -fx-font-size: 14px; -fx-pref-width: 400px; -fx-font-family: 'Segoe UI', 'Arial', sans-serif;");
+        notesBox.getChildren().addAll(notesLabel, notesField);
+
+        fieldsContainer.getChildren().addAll(nameBox, amountBox, categoryBox, notesBox);
+
+        HBox actionButtons = new HBox(12);
+        actionButtons.setAlignment(javafx.geometry.Pos.CENTER);
+
+        Button cancelBtn = new Button("Cancelar");
+        cancelBtn.setPrefHeight(44);
+        cancelBtn.setStyle("-fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-font-size: 14px; -fx-font-weight: 600; -fx-background-radius: 10; -fx-border-color: #3F3F46; -fx-border-width: 1.5; -fx-border-radius: 10; -fx-cursor: hand; -fx-pref-width: 194px;");
+        cancelBtn.setOnAction(e -> {
+            formStage.close();
+            contentArea.setEffect(null);
+        });
+
+        Button saveBtn = new Button("Salvar Alterações");
+        saveBtn.setPrefHeight(44);
+        saveBtn.setStyle("-fx-background-color: #7C3AED; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: 600; -fx-background-radius: 10; -fx-cursor: hand; -fx-pref-width: 194px;");
+        saveBtn.setOnAction(e -> {
+            try {
+                String cleanAmount = amountField.getText().replace("R$", "").replace(".", "").replace(",", ".").trim();
+                BigDecimal amount = new BigDecimal(cleanAmount);
+
+                Transaction updatedTransaction = new Transaction();
+                updatedTransaction.setName(nameField.getText().trim());
+                updatedTransaction.setAmount(amount);
+                updatedTransaction.setCategory(categoryCombo.getValue());
+                updatedTransaction.setNotes(notesField.getText().trim().isEmpty() ? null : notesField.getText().trim());
+
+                transactionService.update(transaction.getId(), updatedTransaction);
+                showToast("Transação atualizada com sucesso!", true);
+                formStage.close();
+                contentArea.setEffect(null);
+                loadTransactionsView();
+            } catch (Exception ex) {
+                showToast("Erro ao atualizar transação: " + ex.getMessage(), false);
+            }
+        });
+
+        actionButtons.getChildren().addAll(cancelBtn, saveBtn);
+        formContent.getChildren().addAll(header, fieldsContainer, actionButtons);
+
+        StackPane root = new StackPane(formContent);
+        root.setStyle("-fx-background-color: transparent;");
+        root.setPadding(new Insets(40));
+
+        Scene scene = new Scene(root, 700, 800);
+        scene.setFill(Color.TRANSPARENT);
+
+        formStage.setScene(scene);
+        formStage.setOnHidden(e -> contentArea.setEffect(null));
+        formStage.showAndWait();
+    }
+
     private void openCategoryForm() {
         System.out.println("[formulario nova categoria]: abrindo");
 
@@ -785,8 +998,12 @@ public class MainController {
     private void loadTransactionsView() {
         contentArea.getChildren().clear();
 
+        HBox mainContainer = new HBox(24);
+        mainContainer.setStyle("-fx-padding: 40 48; -fx-background-color: #18181B;");
+        HBox.setHgrow(mainContainer, Priority.ALWAYS);
+
         VBox transactionsView = new VBox(28);
-        transactionsView.setStyle("-fx-padding: 40 48; -fx-background-color: #18181B;");
+        HBox.setHgrow(transactionsView, Priority.ALWAYS);
 
         VBox header = new VBox(8);
         Label title = new Label("Transações");
@@ -796,6 +1013,7 @@ public class MainController {
         header.getChildren().addAll(title, subtitle);
 
         VBox transactionsContainer = new VBox(16);
+        transactionsContainer.setId("transactionsContainer");
         transactionsContainer.setStyle("-fx-background-color: #27272A; -fx-background-radius: 18; -fx-padding: 32 28; -fx-border-color: #3F3F46; -fx-border-width: 1; -fx-border-radius: 18;");
 
         try {
@@ -831,7 +1049,11 @@ public class MainController {
 
         transactionsView.getChildren().addAll(header, transactionsContainer);
 
-        ScrollPane scrollPane = new ScrollPane(transactionsView);
+        VBox filtersPanel = createFiltersPanel();
+
+        mainContainer.getChildren().addAll(transactionsView, filtersPanel);
+
+        ScrollPane scrollPane = new ScrollPane(mainContainer);
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
         scrollPane.setStyle("-fx-background-color: transparent; -fx-background: transparent;");
@@ -1105,12 +1327,34 @@ public class MainController {
 
         info.getChildren().addAll(name, categoryBox);
 
+        Locale localeBR = new Locale("pt", "BR");
+        currencyFormat = NumberFormat.getNumberInstance(localeBR);
+        currencyFormat.setMinimumFractionDigits(2);
+        currencyFormat.setMaximumFractionDigits(2);
+
         String prefix = type == CategoryType.INCOME ? "+ " : "- ";
         Label amount = new Label(prefix + currencyFormat.format(transaction.getAmount()));
         String amountColor = type == CategoryType.INCOME ? "#22C55E" : "#EF4444";
-        amount.setStyle("-fx-text-fill: " + amountColor + "; -fx-font-size: 22px; -fx-font-weight: 700; -fx-min-width: 150; -fx-alignment: center-right;");
+        amount.setStyle("-fx-text-fill: " + amountColor + "; -fx-font-size: 22px; -fx-font-weight: 700; -fx-min-width: 120; -fx-alignment: center-right;");
 
-        row.getChildren().addAll(iconContainer, info, amount);
+        HBox actions = new HBox(8);
+        actions.setAlignment(Pos.CENTER);
+
+        Button editBtn = new Button("Editar");
+        editBtn.setStyle("-fx-background-color: rgba(59, 130, 246, 0.1); -fx-text-fill: #3B82F6; -fx-font-size: 12px; -fx-font-weight: 600; -fx-background-radius: 8; -fx-cursor: hand; -fx-padding: 8 14; -fx-border-color: rgba(59, 130, 246, 0.2); -fx-border-width: 1; -fx-border-radius: 8;");
+        editBtn.setOnMouseEntered(e -> editBtn.setStyle("-fx-background-color: rgba(59, 130, 246, 0.2); -fx-text-fill: #3B82F6; -fx-font-size: 12px; -fx-font-weight: 600; -fx-background-radius: 8; -fx-cursor: hand; -fx-padding: 8 14; -fx-border-color: rgba(59, 130, 246, 0.3); -fx-border-width: 1; -fx-border-radius: 8;"));
+        editBtn.setOnMouseExited(e -> editBtn.setStyle("-fx-background-color: rgba(59, 130, 246, 0.1); -fx-text-fill: #3B82F6; -fx-font-size: 12px; -fx-font-weight: 600; -fx-background-radius: 8; -fx-cursor: hand; -fx-padding: 8 14; -fx-border-color: rgba(59, 130, 246, 0.2); -fx-border-width: 1; -fx-border-radius: 8;"));
+        editBtn.setOnAction(e -> handleEditTransaction(transaction));
+
+        Button deleteBtn = new Button("Excluir");
+        deleteBtn.setStyle("-fx-background-color: rgba(239, 68, 68, 0.1); -fx-text-fill: #EF4444; -fx-font-size: 12px; -fx-font-weight: 600; -fx-background-radius: 8; -fx-cursor: hand; -fx-padding: 8 14; -fx-border-color: rgba(239, 68, 68, 0.2); -fx-border-width: 1; -fx-border-radius: 8;");
+        deleteBtn.setOnMouseEntered(e -> deleteBtn.setStyle("-fx-background-color: rgba(239, 68, 68, 0.2); -fx-text-fill: #EF4444; -fx-font-size: 12px; -fx-font-weight: 600; -fx-background-radius: 8; -fx-cursor: hand; -fx-padding: 8 14; -fx-border-color: rgba(239, 68, 68, 0.3); -fx-border-width: 1; -fx-border-radius: 8;"));
+        deleteBtn.setOnMouseExited(e -> deleteBtn.setStyle("-fx-background-color: rgba(239, 68, 68, 0.1); -fx-text-fill: #EF4444; -fx-font-size: 12px; -fx-font-weight: 600; -fx-background-radius: 8; -fx-cursor: hand; -fx-padding: 8 14; -fx-border-color: rgba(239, 68, 68, 0.2); -fx-border-width: 1; -fx-border-radius: 8;"));
+        deleteBtn.setOnAction(e -> handleDeleteTransaction(transaction));
+
+        actions.getChildren().addAll(editBtn, deleteBtn);
+
+        row.getChildren().addAll(iconContainer, info, amount, actions);
 
         return row;
     }
@@ -1164,6 +1408,215 @@ public class MainController {
         return row;
     }
 
+    private VBox createFiltersPanel() {
+        VBox filtersPanel = new VBox(20);
+        filtersPanel.setStyle("-fx-background-color: #27272A; -fx-background-radius: 18; -fx-padding: 32 24; -fx-border-color: #3F3F46; -fx-border-width: 1; -fx-border-radius: 18; -fx-pref-width: 320; -fx-min-width: 320;");
+
+        HBox titleBox = new HBox(12);
+        titleBox.setAlignment(Pos.CENTER_LEFT);
+
+        StackPane iconContainer = new StackPane();
+        iconContainer.setStyle("-fx-background-color: rgba(124, 58, 237, 0.15); -fx-background-radius: 10; -fx-min-width: 40; -fx-min-height: 40; -fx-max-width: 40; -fx-max-height: 40;");
+        Label filterIcon = new Label("🔍");
+        filterIcon.setStyle("-fx-font-size: 20px;");
+        iconContainer.getChildren().add(filterIcon);
+
+        VBox titleContent = new VBox(2);
+        Label filtersTitle = new Label("Filtros");
+        filtersTitle.setStyle("-fx-text-fill: #F4F4F5; -fx-font-size: 18px; -fx-font-weight: 700;");
+        Label filtersSubtitle = new Label("Refine sua busca");
+        filtersSubtitle.setStyle("-fx-text-fill: #71717A; -fx-font-size: 12px;");
+        titleContent.getChildren().addAll(filtersTitle, filtersSubtitle);
+
+        titleBox.getChildren().addAll(iconContainer, titleContent);
+
+        Separator separator1 = new Separator();
+        separator1.setStyle("-fx-background-color: #3F3F46;");
+
+        VBox searchBox = new VBox(8);
+        Label searchLabel = new Label("Buscar por nome");
+        searchLabel.setStyle("-fx-text-fill: #E4E4E7; -fx-font-size: 12px; -fx-font-weight: 600; -fx-letter-spacing: 0.5px;");
+
+        TextField searchField = new TextField();
+        searchField.setPromptText("Digite o nome...");
+        searchField.setStyle("-fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-prompt-text-fill: #71717A; -fx-background-radius: 10; -fx-border-color: #3F3F46; -fx-border-radius: 10; -fx-border-width: 1.5; -fx-padding: 12 14; -fx-font-size: 13px;");
+        searchField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+            if (isNowFocused) {
+                searchField.setStyle("-fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-prompt-text-fill: #71717A; -fx-background-radius: 10; -fx-border-color: #7C3AED; -fx-border-radius: 10; -fx-border-width: 1.5; -fx-padding: 12 14; -fx-font-size: 13px;");
+            } else {
+                searchField.setStyle("-fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-prompt-text-fill: #71717A; -fx-background-radius: 10; -fx-border-color: #3F3F46; -fx-border-radius: 10; -fx-border-width: 1.5; -fx-padding: 12 14; -fx-font-size: 13px;");
+            }
+        });
+
+        final javafx.concurrent.Task<Void>[] searchTask = new javafx.concurrent.Task[]{null};
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (searchTask[0] != null && searchTask[0].isRunning()) {
+                searchTask[0].cancel();
+            }
+
+            searchTask[0] = new javafx.concurrent.Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    Thread.sleep(500);
+                    return null;
+                }
+            };
+
+            searchTask[0].setOnSucceeded(e -> applyFilters(searchField, null, null, null, null));
+            new Thread(searchTask[0]).start();
+        });
+
+        searchBox.getChildren().addAll(searchLabel, searchField);
+
+        VBox categoryBox = new VBox(8);
+        Label categoryLabel = new Label("Categoria");
+        categoryLabel.setStyle("-fx-text-fill: #E4E4E7; -fx-font-size: 12px; -fx-font-weight: 600; -fx-letter-spacing: 0.5px;");
+
+        ComboBox<Category> categoryCombo = new ComboBox<>();
+        categoryCombo.setPromptText("Todas");
+        categoryCombo.setStyle("-fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-background-radius: 10; -fx-border-color: #3F3F46; -fx-border-radius: 10; -fx-border-width: 1.5; -fx-padding: 8 12; -fx-font-size: 13px;");
+        categoryCombo.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+            if (isNowFocused) {
+                categoryCombo.setStyle("-fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-background-radius: 10; -fx-border-color: #7C3AED; -fx-border-radius: 10; -fx-border-width: 1.5; -fx-padding: 8 12; -fx-font-size: 13px;");
+            } else {
+                categoryCombo.setStyle("-fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-background-radius: 10; -fx-border-color: #3F3F46; -fx-border-radius: 10; -fx-border-width: 1.5; -fx-padding: 8 12; -fx-font-size: 13px;");
+            }
+        });
+
+        try {
+            List<Category> categories = categoryService.getAll();
+            categoryCombo.getItems().add(null);
+            categoryCombo.getItems().addAll(categories);
+
+            categoryCombo.setButtonCell(new ListCell<Category>() {
+                @Override
+                protected void updateItem(Category item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText("Todas");
+                    } else {
+                        setText(item.getName());
+                    }
+                    setStyle("-fx-text-fill: #F4F4F5; -fx-background-color: #18181B;");
+                }
+            });
+
+            categoryCombo.setCellFactory(lv -> new ListCell<Category>() {
+                @Override
+                protected void updateItem(Category item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText("Todas");
+                    } else {
+                        setText(item.getName());
+                    }
+                    setStyle("-fx-text-fill: #F4F4F5; -fx-background-color: #18181B; -fx-padding: 8 12;");
+                }
+            });
+
+            categoryCombo.setOnAction(e -> applyFilters(searchField, categoryCombo, null, null, null));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        categoryBox.getChildren().addAll(categoryLabel, categoryCombo);
+
+        VBox typeBox = new VBox(8);
+        Label typeLabel = new Label("Tipo");
+        typeLabel.setStyle("-fx-text-fill: #E4E4E7; -fx-font-size: 12px; -fx-font-weight: 600; -fx-letter-spacing: 0.5px;");
+
+        ComboBox<String> typeCombo = new ComboBox<>();
+        typeCombo.getItems().addAll("Todos", "Receitas", "Despesas");
+        typeCombo.setValue("Todos");
+        typeCombo.setStyle("-fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-background-radius: 10; -fx-border-color: #3F3F46; -fx-border-radius: 10; -fx-border-width: 1.5; -fx-padding: 8 12; -fx-font-size: 13px;");
+        typeCombo.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+            if (isNowFocused) {
+                typeCombo.setStyle("-fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-background-radius: 10; -fx-border-color: #7C3AED; -fx-border-radius: 10; -fx-border-width: 1.5; -fx-padding: 8 12; -fx-font-size: 13px;");
+            } else {
+                typeCombo.setStyle("-fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-background-radius: 10; -fx-border-color: #3F3F46; -fx-border-radius: 10; -fx-border-width: 1.5; -fx-padding: 8 12; -fx-font-size: 13px;");
+            }
+        });
+        typeCombo.setOnAction(e -> applyFilters(searchField, categoryCombo, typeCombo, null, null));
+
+        typeBox.getChildren().addAll(typeLabel, typeCombo);
+
+        VBox amountBox = new VBox(8);
+        Label amountLabel = new Label("Faixa de valor");
+        amountLabel.setStyle("-fx-text-fill: #E4E4E7; -fx-font-size: 12px; -fx-font-weight: 600; -fx-letter-spacing: 0.5px;");
+
+        HBox amountFields = new HBox(10);
+
+        TextField minAmountField = new TextField();
+        minAmountField.setPromptText("Mínimo");
+        minAmountField.setStyle("-fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-prompt-text-fill: #71717A; -fx-background-radius: 10; -fx-border-color: #3F3F46; -fx-border-radius: 10; -fx-border-width: 1.5; -fx-padding: 12 14; -fx-font-size: 13px;");
+        HBox.setHgrow(minAmountField, Priority.ALWAYS);
+        minAmountField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+            if (isNowFocused) {
+                minAmountField.setStyle("-fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-prompt-text-fill: #71717A; -fx-background-radius: 10; -fx-border-color: #7C3AED; -fx-border-radius: 10; -fx-border-width: 1.5; -fx-padding: 12 14; -fx-font-size: 13px;");
+            } else {
+                minAmountField.setStyle("-fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-prompt-text-fill: #71717A; -fx-background-radius: 10; -fx-border-color: #3F3F46; -fx-border-radius: 10; -fx-border-width: 1.5; -fx-padding: 12 14; -fx-font-size: 13px;");
+            }
+        });
+
+        TextField maxAmountField = new TextField();
+        maxAmountField.setPromptText("Máximo");
+        maxAmountField.setStyle("-fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-prompt-text-fill: #71717A; -fx-background-radius: 10; -fx-border-color: #3F3F46; -fx-border-radius: 10; -fx-border-width: 1.5; -fx-padding: 12 14; -fx-font-size: 13px;");
+        HBox.setHgrow(maxAmountField, Priority.ALWAYS);
+        maxAmountField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+            if (isNowFocused) {
+                maxAmountField.setStyle("-fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-prompt-text-fill: #71717A; -fx-background-radius: 10; -fx-border-color: #7C3AED; -fx-border-radius: 10; -fx-border-width: 1.5; -fx-padding: 12 14; -fx-font-size: 13px;");
+            } else {
+                maxAmountField.setStyle("-fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-prompt-text-fill: #71717A; -fx-background-radius: 10; -fx-border-color: #3F3F46; -fx-border-radius: 10; -fx-border-width: 1.5; -fx-padding: 12 14; -fx-font-size: 13px;");
+            }
+        });
+
+        final javafx.concurrent.Task<Void>[] amountTask = new javafx.concurrent.Task[]{null};
+        javafx.beans.value.ChangeListener<String> amountListener = (obs, oldVal, newVal) -> {
+            if (amountTask[0] != null && amountTask[0].isRunning()) {
+                amountTask[0].cancel();
+            }
+
+            amountTask[0] = new javafx.concurrent.Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    Thread.sleep(500);
+                    return null;
+                }
+            };
+
+            amountTask[0].setOnSucceeded(e -> applyFilters(searchField, categoryCombo, typeCombo, minAmountField, maxAmountField));
+            new Thread(amountTask[0]).start();
+        };
+
+        minAmountField.textProperty().addListener(amountListener);
+        maxAmountField.textProperty().addListener(amountListener);
+
+        amountFields.getChildren().addAll(minAmountField, maxAmountField);
+        amountBox.getChildren().addAll(amountLabel, amountFields);
+
+        Separator separator2 = new Separator();
+        separator2.setStyle("-fx-background-color: #3F3F46;");
+
+        Button clearBtn = new Button("Limpar Filtros");
+        clearBtn.setMaxWidth(Double.MAX_VALUE);
+        clearBtn.setPrefHeight(44);
+        clearBtn.setStyle("-fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-font-size: 13px; -fx-font-weight: 600; -fx-background-radius: 10; -fx-border-color: #3F3F46; -fx-border-width: 1.5; -fx-border-radius: 10; -fx-cursor: hand;");
+        clearBtn.setOnMouseEntered(e -> clearBtn.setStyle("-fx-background-color: #7C3AED; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: 600; -fx-background-radius: 10; -fx-border-color: #7C3AED; -fx-border-width: 1.5; -fx-border-radius: 10; -fx-cursor: hand;"));
+        clearBtn.setOnMouseExited(e -> clearBtn.setStyle("-fx-background-color: #18181B; -fx-text-fill: #F4F4F5; -fx-font-size: 13px; -fx-font-weight: 600; -fx-background-radius: 10; -fx-border-color: #3F3F46; -fx-border-width: 1.5; -fx-border-radius: 10; -fx-cursor: hand;"));
+        clearBtn.setOnAction(e -> {
+            searchField.clear();
+            categoryCombo.setValue(null);
+            typeCombo.setValue("Todos");
+            minAmountField.clear();
+            maxAmountField.clear();
+            loadTransactionsView();
+        });
+
+        filtersPanel.getChildren().addAll(titleBox, separator1, searchBox, categoryBox, typeBox, amountBox, separator2, clearBtn);
+
+        return filtersPanel;
+    }
+
     private void updateTypeSelection(VBox incomeBox, VBox expenseBox, boolean isIncome) {
         if (isIncome) {
             incomeBox.setStyle("-fx-background-color: #7C3AED; -fx-background-radius: 12; -fx-border-color: #7C3AED;-fx-border-width: 1.5; -fx-border-radius: 12; -fx-padding: 16 24; -fx-cursor: hand; -fx-pref-width: 194;");
@@ -1171,6 +1624,37 @@ public class MainController {
         } else {
             expenseBox.setStyle("-fx-background-color: #7C3AED; -fx-background-radius: 12; -fx-border-color: #7C3AED; -fx-border-width: 1.5;   -fx-border-radius: 12;  -fx-padding: 16 24;  -fx-cursor: hand; -fx-pref-width: 194;");
             incomeBox.setStyle("-fx-background-color: #18181B; -fx-background-radius: 12; -fx-border-color: #3F3F46; -fx-border-width: 1.5;-fx-border-radius: 12; -fx-padding: 16 24; -fx-cursor: hand; -fx-pref-width: 194");
+        }
+    }
+
+    private void updateTransactionsList(List<Transaction> transactions) {
+        VBox transactionsContainer = (VBox) contentArea.lookup("#transactionsContainer");
+        if (transactionsContainer == null) return;
+
+        transactionsContainer.getChildren().clear();
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+
+        if (transactions.isEmpty()) {
+            VBox emptyState = new VBox(20);
+            emptyState.setAlignment(Pos.CENTER);
+            emptyState.setStyle("-fx-padding: 60;");
+
+            Label emptyIcon = new Label("🔍");
+            emptyIcon.setStyle("-fx-font-size: 64px;");
+
+            Label emptyLabel = new Label("Nenhuma transação encontrada");
+            emptyLabel.setStyle("-fx-text-fill: #A1A1AA; -fx-font-size: 18px; -fx-font-weight: 600;");
+
+            Label emptyHint = new Label("Tente ajustar os filtros");
+            emptyHint.setStyle("-fx-text-fill: #71717A; -fx-font-size: 14px;");
+
+            emptyState.getChildren().addAll(emptyIcon, emptyLabel, emptyHint);
+            transactionsContainer.getChildren().add(emptyState);
+        } else {
+            for (Transaction transaction : transactions) {
+                HBox transactionRow = createTransactionRow(transaction, currencyFormat);
+                transactionsContainer.getChildren().add(transactionRow);
+            }
         }
     }
 
@@ -1239,7 +1723,55 @@ public class MainController {
         showToast(message, false);
     }
 
-    private void showSuccess(String message) {
-        showToast(message, true);
+    private void applyFilters(TextField searchField, ComboBox<Category> categoryCombo, ComboBox<String> typeCombo, TextField minAmountField, TextField maxAmountField) {
+        try {
+            List<Transaction> transactions = transactionService.getAll();
+
+            String searchText = searchField.getText().trim().toLowerCase();
+            if (!searchText.isEmpty()) {
+                transactions = transactions.stream()
+                        .filter(t -> t.getName().toLowerCase().contains(searchText))
+                        .collect(Collectors.toList());
+            }
+
+            if (categoryCombo != null && categoryCombo.getValue() != null) {
+                UUID categoryId = categoryCombo.getValue().getId();
+                transactions = transactions.stream()
+                        .filter(t -> t.getCategory() != null && t.getCategory().getId().equals(categoryId))
+                        .collect(Collectors.toList());
+            }
+
+            if (typeCombo != null && !typeCombo.getValue().equals("Todos")) {
+                CategoryType type = typeCombo.getValue().equals("Receitas") ? CategoryType.INCOME : CategoryType.EXPENSE;
+                transactions = transactions.stream()
+                        .filter(t -> t.getCategory() != null && t.getCategory().getType() == type)
+                        .collect(Collectors.toList());
+            }
+
+            if (minAmountField != null && !minAmountField.getText().trim().isEmpty()) {
+                try {
+                    BigDecimal minAmount = new BigDecimal(minAmountField.getText().trim());
+                    transactions = transactions.stream()
+                            .filter(t -> t.getAmount().compareTo(minAmount) >= 0)
+                            .collect(Collectors.toList());
+                } catch (NumberFormatException ex) {
+                }
+            }
+
+            if (maxAmountField != null && !maxAmountField.getText().trim().isEmpty()) {
+                try {
+                    BigDecimal maxAmount = new BigDecimal(maxAmountField.getText().trim());
+                    transactions = transactions.stream()
+                            .filter(t -> t.getAmount().compareTo(maxAmount) <= 0)
+                            .collect(Collectors.toList());
+                } catch (NumberFormatException ex) {
+                }
+            }
+
+            updateTransactionsList(transactions);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

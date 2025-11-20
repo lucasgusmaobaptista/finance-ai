@@ -22,7 +22,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
 
     List<Transaction> findByUserIdAndNameLikeIgnoreCase(UUID userId, String name);
 
-    List<Transaction> findByUserIdAndCategoryTypeAndAmountBetween(UUID userId, CategoryType type, BigDecimal minAmount, BigDecimal maxAmount);
-
     List<Transaction> findAllByUserIdAndCategoryId(UUID id, UUID categoryId);
+
+    List<Transaction> findByUserIdAndAmountBetween(UUID id, BigDecimal minAmount, BigDecimal maxAmount);
 }
