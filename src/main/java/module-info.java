@@ -28,6 +28,7 @@ module me.lucasgusmao.financeai {
     opens me.lucasgusmao.financeai to javafx.fxml, spring.core, spring.beans, spring.context;
     opens me.lucasgusmao.financeai.config to spring.core, spring.beans, spring.context;
     opens me.lucasgusmao.financeai.model.entity;
+    opens me.lucasgusmao.financeai.model.enums;
     opens me.lucasgusmao.financeai.service to spring.core, spring.beans, spring.context;
     opens me.lucasgusmao.financeai.repository to spring.core, spring.beans, spring.context;
     opens me.lucasgusmao.financeai.controller to javafx.fxml, spring.core, spring.beans, spring.context;
@@ -38,6 +39,7 @@ module me.lucasgusmao.financeai {
     exports me.lucasgusmao.financeai.config;
     exports me.lucasgusmao.financeai;
     exports me.lucasgusmao.financeai.model.entity;
+    exports me.lucasgusmao.financeai.model.enums;
     exports me.lucasgusmao.financeai.service;
     exports me.lucasgusmao.financeai.repository;
 }

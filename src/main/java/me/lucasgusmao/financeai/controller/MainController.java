@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.effect.BoxBlur;
@@ -27,9 +28,13 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 public class MainController {
@@ -68,6 +73,7 @@ public class MainController {
     public void initialize() {
         loadUserData();
         startAnimations();
+        loadDashboardData();
     }
 
     private void loadUserData() {
@@ -103,6 +109,27 @@ public class MainController {
             stage.setTitle("FinanceAI - Login");
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleNavigateHome() {
+        currentView = "dashboard";
+        try {
+            Scene scene = sidebar.getScene();
+            Stage stage = (Stage) scene.getWindow();
+
+            FXMLLoader loader = new FXMLLoader(
+                    FinanceApplication.class.getResource("main-view.fxml")
+            );
+            loader.setControllerFactory(springContext::getBean);
+
+            Scene newScene = new Scene(loader.load(), scene.getWidth(), scene.getHeight());
+            stage.setScene(newScene);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Erro ao carregar menu principal");
         }
     }
 
@@ -174,6 +201,138 @@ public class MainController {
     private void handleNavigateToTransactions() {
         currentView = "transactions";
         loadTransactionsView();
+    }
+
+    @FXML
+    private void handleNavigateCategories() {
+        currentView = "categories";
+        loadCategoriesView();
+    }
+
+    private void loadDashboardData() {
+        try {
+            List<Transaction> allTransactions = transactionService.getAll();
+            BigDecimal totalIncome = allTransactions.stream()
+                    .filter(t -> t.getCategory() != null && t.getCategory().getType() == CategoryType.INCOME)
+                    .map(Transaction::getAmount)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            BigDecimal totalExpense = allTransactions.stream()
+                    .filter(t -> t.getCategory() != null && t.getCategory().getType() == CategoryType.EXPENSE)
+                    .map(Transaction::getAmount)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            BigDecimal balance = totalIncome.subtract(totalExpense);
+            NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+
+            Platform.runLater(() -> {
+                Label incomeValueLabel = (Label) contentArea.lookup("#incomeValue");
+                Label expenseValueLabel = (Label) contentArea.lookup("#expenseValue");
+                Label balanceValueLabel = (Label) contentArea.lookup("#balanceValue");
+
+                if (incomeValueLabel != null) incomeValueLabel.setText(currencyFormat.format(totalIncome));
+                if (expenseValueLabel != null) expenseValueLabel.setText(currencyFormat.format(totalExpense));
+                if (balanceValueLabel != null) balanceValueLabel.setText(currencyFormat.format(balance));
+
+                loadFinancialChart(allTransactions);
+                loadTopCategories();
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Erro ao carregar dados do dashboard");
+        }
+    }
+
+    private void loadFinancialChart(List<Transaction> allTransactions) {
+        StackPane chartContainer = (StackPane) contentArea.lookup("#chartContainer");
+        if (chartContainer == null) return;
+
+        try {
+            if (allTransactions.isEmpty()) {
+                chartContainer.getChildren().clear();
+                VBox emptyState = new VBox(16);
+                emptyState.setAlignment(Pos.CENTER);
+
+                Label icon = new Label("📊");
+                icon.setStyle("-fx-font-size: 72px;");
+
+                Label message = new Label("Sem dados para exibir");
+                message.setStyle("-fx-text-fill: #71717A; -fx-font-size: 16px; -fx-font-weight: 600;");
+
+                Label hint = new Label("Adicione transações para visualizar o gráfico");
+                hint.setStyle("-fx-text-fill: #52525B; -fx-font-size: 13px;");
+
+                emptyState.getChildren().addAll(icon, message, hint);
+                chartContainer.getChildren().add(emptyState);
+                return;
+            }
+
+            BigDecimal totalIncome = allTransactions.stream()
+                    .filter(t -> t.getCategory() != null && t.getCategory().getType() == CategoryType.INCOME)
+                    .map(Transaction::getAmount)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            BigDecimal totalExpense = allTransactions.stream()
+                    .filter(t -> t.getCategory() != null && t.getCategory().getType() == CategoryType.EXPENSE)
+                    .map(Transaction::getAmount)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            VBox chartContent = createChart(totalIncome, totalExpense);
+            chartContainer.getChildren().clear();
+            chartContainer.getChildren().add(chartContent);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadTopCategories() {
+        try {
+            List<Transaction> allTransactions = transactionService.getAll();
+            NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+            Map<Category, BigDecimal> categoryTotals = allTransactions.stream()
+                    .filter(t -> t.getCategory() != null && t.getCategory().getType() == CategoryType.EXPENSE)
+                    .collect(Collectors.groupingBy(
+                            Transaction::getCategory,
+                            Collectors.reducing(BigDecimal.ZERO, Transaction::getAmount, BigDecimal::add)
+                    ));
+
+            List<Map.Entry<Category, BigDecimal>> topCategories = categoryTotals.entrySet().stream()
+                    .sorted(Map.Entry.<Category, BigDecimal>comparingByValue().reversed())
+                    .limit(5)
+                    .collect(Collectors.toList());
+
+            BigDecimal totalExpenses = categoryTotals.values().stream()
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            VBox categoryContainer = (VBox) contentArea.lookup("#categoryExpensesContainer");
+
+            if (categoryContainer != null) {
+                categoryContainer.getChildren().clear();
+
+                if (topCategories.isEmpty()) {
+                    Label emptyLabel = new Label("Nenhuma despesa registrada");
+                    emptyLabel.setStyle("-fx-text-fill: #71717A; -fx-font-size: 14px;");
+                    categoryContainer.getChildren().add(emptyLabel);
+                } else {
+                    for (Map.Entry<Category, BigDecimal> entry : topCategories) {
+                        Category category = entry.getKey();
+                        BigDecimal amount = entry.getValue();
+
+                        double percentage = totalExpenses.compareTo(BigDecimal.ZERO) > 0
+                                ? amount.divide(totalExpenses, 4, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).doubleValue()
+                                : 0;
+
+                        HBox categoryItem = createCategoryExpenseItem(category, amount, percentage, currencyFormat);
+                        categoryContainer.getChildren().add(categoryItem);
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void openTransactionForm() {
@@ -595,6 +754,10 @@ public class MainController {
                 formStage.close();
                 contentArea.setEffect(null);
 
+                if ("categories".equals(currentView)) {
+                    loadCategoriesView();
+                }
+
             } catch (Exception ex) {
                 showToast("Erro ao criar categoria: " + ex.getMessage(), false);
             }
@@ -677,6 +840,229 @@ public class MainController {
         contentArea.getChildren().add(scrollPane);
     }
 
+    private void loadCategoriesView() {
+        contentArea.getChildren().clear();
+
+        VBox categoriesView = new VBox(28);
+        categoriesView.setStyle("-fx-padding: 40 48; -fx-background-color: #18181B;");
+
+        VBox header = new VBox(8);
+        Label title = new Label("Categorias");
+        title.setStyle("-fx-text-fill: #F4F4F5; -fx-font-size: 28px; -fx-font-weight: 700;");
+        Label subtitle = new Label("Organize suas finanças por categorias");
+        subtitle.setStyle("-fx-text-fill: #71717A; -fx-font-size: 14px;");
+        header.getChildren().addAll(title, subtitle);
+        VBox categoriesContainer = new VBox(16);
+        categoriesContainer.setStyle("-fx-background-color: #27272A; -fx-background-radius: 18; -fx-padding: 32 28; -fx-border-color: #3F3F46; -fx-border-width: 1; -fx-border-radius: 18;");
+
+        try {
+            List<Category> categories = categoryService.getAll();
+            List<Transaction> allTransactions = transactionService.getAll();
+            Map<UUID, Long> transactionCountByCategory = allTransactions.stream()
+                    .filter(t -> t.getCategory() != null)
+                    .collect(Collectors.groupingBy(t -> t.getCategory().getId(), Collectors.counting()));
+
+            Map<UUID, BigDecimal> totalByCategory = allTransactions.stream()
+                    .filter(t -> t.getCategory() != null)
+                    .collect(Collectors.groupingBy(
+                            t -> t.getCategory().getId(),
+                            Collectors.reducing(BigDecimal.ZERO, Transaction::getAmount, BigDecimal::add)
+                    ));
+
+            if (categories.isEmpty()) {
+                VBox emptyState = new VBox(20);
+                emptyState.setAlignment(Pos.CENTER);
+                emptyState.setStyle("-fx-padding: 60;");
+
+                Label emptyIcon = new Label("🏷️");
+                emptyIcon.setStyle("-fx-font-size: 64px;");
+                Label emptyLabel = new Label("Nenhuma categoria encontrada");
+                emptyLabel.setStyle("-fx-text-fill: #A1A1AA; -fx-font-size: 18px; -fx-font-weight: 600;");
+                Label emptyHint = new Label("Crie categorias para organizar suas transações");
+                emptyHint.setStyle("-fx-text-fill: #71717A; -fx-font-size: 14px;");
+                emptyState.getChildren().addAll(emptyIcon, emptyLabel, emptyHint);
+                categoriesContainer.getChildren().add(emptyState);
+            } else {
+                NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+                for (Category category : categories) {
+                    long transactionCount = transactionCountByCategory.getOrDefault(category.getId(), 0L);
+                    BigDecimal total = totalByCategory.getOrDefault(category.getId(), BigDecimal.ZERO);
+                    HBox categoryRow = createCategoryRow(category, transactionCount, total, currencyFormat);
+                    categoriesContainer.getChildren().add(categoryRow);
+                }
+            }
+        } catch (Exception e) {
+            showError("Erro ao carregar categorias: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        categoriesView.getChildren().addAll(header, categoriesContainer);
+        ScrollPane scrollPane = new ScrollPane(categoriesView);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        scrollPane.setStyle("-fx-background-color: transparent; -fx-background: transparent;");
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+
+        contentArea.getChildren().add(scrollPane);
+    }
+
+    private VBox createChart(BigDecimal totalIncome, BigDecimal totalExpense) {
+        VBox chart = new VBox(24);
+        chart.setAlignment(Pos.CENTER);
+        chart.setStyle("-fx-padding: 30 20;");
+
+        HBox legend = new HBox(32);
+        legend.setAlignment(Pos.CENTER);
+
+        HBox incomeLegend = new HBox(8);
+        incomeLegend.setAlignment(Pos.CENTER);
+        StackPane incomeColor = new StackPane();
+        incomeColor.setStyle("-fx-background-color: #22C55E; -fx-background-radius: 3; -fx-pref-width: 16; -fx-pref-height: 16;");
+        Label incomeLabel = new Label("Receitas");
+        incomeLabel.setStyle("-fx-text-fill: #A1A1AA; -fx-font-size: 13px; -fx-font-weight: 600;");
+        incomeLegend.getChildren().addAll(incomeColor, incomeLabel);
+
+        HBox expenseLegend = new HBox(8);
+        expenseLegend.setAlignment(Pos.CENTER);
+        StackPane expenseColor = new StackPane();
+        expenseColor.setStyle("-fx-background-color: #EF4444; -fx-background-radius: 3; -fx-pref-width: 16; -fx-pref-height: 16;");
+        Label expenseLabel = new Label("Despesas");
+        expenseLabel.setStyle("-fx-text-fill: #A1A1AA; -fx-font-size: 13px; -fx-font-weight: 600;");
+        expenseLegend.getChildren().addAll(expenseColor, expenseLabel);
+
+        HBox profitLegend = new HBox(8);
+        profitLegend.setAlignment(Pos.CENTER);
+        StackPane profitLine = new StackPane();
+        profitLine.setStyle("-fx-background-color: #3B82F6; -fx-background-radius: 3; -fx-pref-width: 16; -fx-pref-height: 16;");
+        Label profitLabel = new Label("Lucro");
+        profitLabel.setStyle("-fx-text-fill: #A1A1AA; -fx-font-size: 13px; -fx-font-weight: 600;");
+        profitLegend.getChildren().addAll(profitLine, profitLabel);
+
+        legend.getChildren().addAll(incomeLegend, expenseLegend, profitLegend);
+
+        BigDecimal profit = totalIncome.subtract(totalExpense);
+        if (profit.equals(BigDecimal.ZERO) || profit.signum() == -1) {
+            profit = BigDecimal.ZERO;
+        }
+        BigDecimal maxValue = totalIncome.max(totalExpense).max(profit.abs());
+        if (maxValue.compareTo(BigDecimal.ZERO) == 0) {
+            maxValue = new BigDecimal("1000");
+        }
+
+        double chartHeight = 240;
+        HBox barsContainer = new HBox(80);
+        barsContainer.setAlignment(Pos.BOTTOM_CENTER);
+        barsContainer.setPrefHeight(chartHeight + 60);
+
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+
+        double incomeHeight = totalIncome.divide(maxValue, 4, RoundingMode.HALF_UP)
+                .multiply(new BigDecimal(chartHeight)).doubleValue();
+        double expenseHeight = totalExpense.divide(maxValue, 4, RoundingMode.HALF_UP)
+                .multiply(new BigDecimal(chartHeight)).doubleValue();
+
+        VBox incomeColumn = new VBox(12);
+        incomeColumn.setAlignment(Pos.BOTTOM_CENTER);
+
+        VBox incomeBar = new VBox();
+        incomeBar.setPrefWidth(80);
+        incomeBar.setPrefHeight(Math.max(incomeHeight, 4));
+        incomeBar.setStyle("-fx-background-color: linear-gradient(to top, #22C55E, #4ADE80); -fx-background-radius: 8 8 0 0;");
+
+        VBox incomeInfo = new VBox(4);
+        incomeInfo.setAlignment(Pos.CENTER);
+        Label incomeValue = new Label(currencyFormat.format(totalIncome));
+        incomeValue.setStyle("-fx-text-fill: #22C55E; -fx-font-size: 16px; -fx-font-weight: 700;");
+        Label incomeTitle = new Label("Receitas");
+        incomeTitle.setStyle("-fx-text-fill: #A1A1AA; -fx-font-size: 13px; -fx-font-weight: 600;");
+        incomeInfo.getChildren().addAll(incomeValue, incomeTitle);
+
+        incomeColumn.getChildren().addAll(incomeBar, incomeInfo);
+
+        VBox expenseColumn = new VBox(12);
+        expenseColumn.setAlignment(Pos.BOTTOM_CENTER);
+
+        VBox expenseBar = new VBox();
+        expenseBar.setPrefWidth(80);
+        expenseBar.setPrefHeight(Math.max(expenseHeight, 4));
+        expenseBar.setStyle("-fx-background-color: linear-gradient(to top, #EF4444, #F87171); -fx-background-radius: 8 8 0 0;");
+
+        VBox expenseInfo = new VBox(4);
+        expenseInfo.setAlignment(Pos.CENTER);
+        Label expenseValue = new Label(currencyFormat.format(totalExpense));
+        expenseValue.setStyle("-fx-text-fill: #EF4444; -fx-font-size: 16px; -fx-font-weight: 700;");
+        Label expenseTitle = new Label("Despesas");
+        expenseTitle.setStyle("-fx-text-fill: #A1A1AA; -fx-font-size: 13px; -fx-font-weight: 600;");
+        expenseInfo.getChildren().addAll(expenseValue, expenseTitle);
+
+        expenseColumn.getChildren().addAll(expenseBar, expenseInfo);
+
+        VBox profitColumn = new VBox(12);
+        profitColumn.setAlignment(Pos.BOTTOM_CENTER);
+
+        double profitHeight = profit.abs().divide(maxValue, 4, RoundingMode.HALF_UP)
+                .multiply(new BigDecimal(chartHeight)).doubleValue();
+
+        VBox profitBar = new VBox();
+        profitBar.setPrefWidth(80);
+        profitBar.setPrefHeight(Math.max(profitHeight, 4));
+        profitBar.setStyle("-fx-background-color: linear-gradient(to top, #3B82F6, #60A5FA); -fx-background-radius: 8 8 0 0;");
+
+        VBox profitInfo = new VBox(4);
+        profitInfo.setAlignment(Pos.CENTER);
+        Label profitValue = new Label(currencyFormat.format(profit));
+        profitValue.setStyle("-fx-text-fill: #3B82F6; -fx-font-size: 16px; -fx-font-weight: 700;");
+        Label profitTitle = new Label("Lucro");
+        profitTitle.setStyle("-fx-text-fill: #A1A1AA; -fx-font-size: 13px; -fx-font-weight: 600;");
+        profitInfo.getChildren().addAll(profitValue, profitTitle);
+
+        profitColumn.getChildren().addAll(profitBar, profitInfo);
+
+        barsContainer.getChildren().addAll(incomeColumn, expenseColumn, profitColumn);
+
+        chart.getChildren().addAll(legend, barsContainer);
+
+        return chart;
+    }
+
+    private HBox createCategoryExpenseItem(Category category, BigDecimal amount, double percentage, NumberFormat currencyFormat) {
+        HBox item = new HBox(16);
+        item.setAlignment(Pos.CENTER_LEFT);
+        item.setStyle("-fx-background-color: #18181B; -fx-background-radius: 14; -fx-padding: 18 20; -fx-border-color: #3F3F46; -fx-border-width: 1; -fx-border-radius: 14;");
+        StackPane iconContainer = new StackPane();
+        iconContainer.setStyle("-fx-background-color: rgba(239, 68, 68, 0.15); -fx-background-radius: 12; -fx-min-width: 48; -fx-min-height: 48; -fx-max-width: 48; -fx-max-height: 48;");
+        Label icon = new Label("💸");
+        icon.setStyle("-fx-font-size: 24px;");
+        iconContainer.getChildren().add(icon);
+        VBox info = new VBox(8);
+        HBox.setHgrow(info, Priority.ALWAYS);
+
+        HBox topRow = new HBox(12);
+        topRow.setAlignment(Pos.CENTER_LEFT);
+        Label categoryName = new Label(category.getName());
+        categoryName.setStyle("-fx-text-fill: #F4F4F5; -fx-font-size: 15px; -fx-font-weight: 600;");
+        Label percentageLabel = new Label(String.format("%.1f%%", percentage));
+        percentageLabel.setStyle("-fx-background-color: rgba(239, 68, 68, 0.12); -fx-text-fill: #FCA5A5; -fx-padding: 4 10; -fx-background-radius: 6; -fx-font-size: 11px; -fx-font-weight: 600;");
+        topRow.getChildren().addAll(categoryName, percentageLabel);
+
+        StackPane progressBar = new StackPane();
+        progressBar.setStyle("-fx-background-color: #27272A; -fx-background-radius: 4; -fx-pref-height: 6;");
+
+        StackPane progressFill = new StackPane();
+        progressFill.setStyle("-fx-background-color: #EF4444; -fx-background-radius: 4; -fx-pref-height: 6;");
+        progressFill.setMaxWidth(percentage * 3.5);
+        progressFill.setAlignment(Pos.CENTER_LEFT);
+        progressBar.getChildren().add(progressFill);
+        StackPane.setAlignment(progressFill, Pos.CENTER_LEFT);
+        info.getChildren().addAll(topRow, progressBar);
+        Label amountLabel = new Label(currencyFormat.format(amount));
+        amountLabel.setStyle("-fx-text-fill: #EF4444; -fx-font-size: 18px; -fx-font-weight: 700;");
+
+        item.getChildren().addAll(iconContainer, info, amountLabel);
+
+        return item;
+    }
+
     private HBox createTransactionRow(Transaction transaction, NumberFormat currencyFormat) {
         HBox row = new HBox(20);
         row.setAlignment(Pos.CENTER_LEFT);
@@ -723,6 +1109,55 @@ public class MainController {
         Label amount = new Label(prefix + currencyFormat.format(transaction.getAmount()));
         String amountColor = type == CategoryType.INCOME ? "#22C55E" : "#EF4444";
         amount.setStyle("-fx-text-fill: " + amountColor + "; -fx-font-size: 22px; -fx-font-weight: 700; -fx-min-width: 150; -fx-alignment: center-right;");
+
+        row.getChildren().addAll(iconContainer, info, amount);
+
+        return row;
+    }
+
+    private HBox createCategoryRow(Category category, long transactionCount, BigDecimal total, NumberFormat currencyFormat) {
+        HBox row = new HBox(20);
+        row.setAlignment(Pos.CENTER_LEFT);
+        row.setStyle("-fx-background-color: #18181B; -fx-background-radius: 14; -fx-padding: 20 24; -fx-border-color: #3F3F46; -fx-border-width: 1; -fx-border-radius: 14;");
+        String emoji = category.getType() == CategoryType.INCOME ? "💰" : "💸";
+        StackPane iconContainer = new StackPane();
+        String iconBg = category.getType() == CategoryType.INCOME ? "rgba(34, 197, 94, 0.15)" : "rgba(239, 68, 68, 0.15)";
+        iconContainer.setStyle("-fx-background-color: " + iconBg + "; -fx-background-radius: 12; -fx-min-width: 50; -fx-min-height: 50; -fx-max-width: 50; -fx-max-height: 50;");
+        Label icon = new Label(emoji);
+        icon.setStyle("-fx-font-size: 28px;");
+        iconContainer.getChildren().add(icon);
+
+        VBox info = new VBox(6);
+        HBox.setHgrow(info, Priority.ALWAYS);
+        Label name = new Label(category.getName());
+        name.setStyle("-fx-text-fill: #F4F4F5; -fx-font-size: 16px; -fx-font-weight: 600;");
+        HBox detailsBox = new HBox(8);
+        detailsBox.setAlignment(Pos.CENTER_LEFT);
+        Label typeBadge = new Label(category.getType() == CategoryType.INCOME ? "Receita" : "Despesa");
+        String badgeColor = category.getType() == CategoryType.INCOME ? "rgba(34, 197, 94, 0.15)" : "rgba(239, 68, 68, 0.15)";
+        String textColor = category.getType() == CategoryType.INCOME ? "#22C55E" : "#EF4444";
+        typeBadge.setStyle("-fx-background-color: " + badgeColor + "; -fx-text-fill: " + textColor + "; -fx-padding: 3 10; -fx-background-radius: 6; -fx-font-size: 11px; -fx-font-weight: 600;");
+
+        Label separator = new Label("•");
+        separator.setStyle("-fx-text-fill: #52525B; -fx-font-size: 13px;");
+
+        Label countLabel = new Label(transactionCount + " transaç" + (transactionCount == 1 ? "ão" : "ões"));
+        countLabel.setStyle("-fx-text-fill: #71717A; -fx-font-size: 13px;");
+
+        detailsBox.getChildren().addAll(typeBadge, separator, countLabel);
+
+        if (category.getDescription() != null && !category.getDescription().isEmpty()) {
+            Label separator2 = new Label("•");
+            separator2.setStyle("-fx-text-fill: #52525B; -fx-font-size: 13px;");
+            Label description = new Label(category.getDescription());
+            description.setStyle("-fx-text-fill: #71717A; -fx-font-size: 13px;");
+            description.setMaxWidth(300);
+            detailsBox.getChildren().addAll(separator2, description);
+        }
+
+        info.getChildren().addAll(name, detailsBox);
+        Label amount = new Label(currencyFormat.format(total));
+        amount.setStyle("-fx-text-fill: " + textColor + "; -fx-font-size: 22px; -fx-font-weight: 700; -fx-min-width: 150; -fx-alignment: center-right;");
 
         row.getChildren().addAll(iconContainer, info, amount);
 
