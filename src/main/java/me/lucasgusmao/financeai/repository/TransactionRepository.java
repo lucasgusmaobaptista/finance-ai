@@ -14,6 +14,8 @@ import java.util.UUID;
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, UUID> {
 
+    Optional<Transaction> findByIdAndUserId(UUID id, UUID userId);
+
     List<Transaction> findAllByUserId(UUID userId);
 
     List<Transaction> findByUserIdAndCategoryType(UUID userId, CategoryType type);
@@ -21,4 +23,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
     List<Transaction> findByUserIdAndNameLikeIgnoreCase(UUID userId, String name);
 
     List<Transaction> findByUserIdAndCategoryTypeAndAmountBetween(UUID userId, CategoryType type, BigDecimal minAmount, BigDecimal maxAmount);
+
+    List<Transaction> findAllByUserIdAndCategoryId(UUID id, UUID categoryId);
 }
