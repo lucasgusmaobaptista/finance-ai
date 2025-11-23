@@ -20,7 +20,6 @@ public class AuthService {
     private User currentUser;
 
     public User register(String name, String email, String password) {
-        //TODO adicionar login social via google, verificação de força da senha e validação  de conta via email/sms
         isValidEmail(email);
         if (repository.existsByEmail(email)) {
             throw new AlreadyExistsException("Já existe um usuário cadastrado com este e-mail.");
@@ -33,7 +32,6 @@ public class AuthService {
     }
 
     public User login(String username, String password) {
-        //TODO adicionar verificação de duas etapas via email/sms
         Optional<User> user = repository.findByUsername(username);
         if (user.isEmpty()) {
             throw new IllegalArgumentException("Usuário e/ou senha inválidos.");

@@ -41,6 +41,9 @@ public class Category {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(name = "is_default")
+    private Boolean isDefault = false;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
