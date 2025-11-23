@@ -5,9 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
-<?import java.net.URL?>
 
-<?import java.lang.String?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="me.lucasgusmao.financeai.controller.MainController">
@@ -26,13 +24,6 @@
                 <Region HBox.hgrow="ALWAYS"/>
 
                 <HBox spacing="16" alignment="CENTER">
-                    <StackPane styleClass="header-search-box">
-                        <HBox spacing="12" alignment="CENTER" style="-fx-padding: 0 16;">
-                            <FontIcon iconLiteral="mdi2m-magnify" iconSize="18" iconColor="#71717A"/>
-                            <TextField promptText="Buscar..." style="-fx-background-color: transparent; -fx-text-fill: #F4F4F5; -fx-prompt-text-fill: #71717A; -fx-border-width: 0; -fx-padding: 0; -fx-pref-width: 200;"/>
-                        </HBox>
-                    </StackPane>
-
                     <StackPane styleClass="header-icon-box">
                         <FontIcon iconLiteral="mdi2b-bell-outline" iconSize="20" iconColor="#A1A1AA"/>
                         <Circle radius="4" fill="#EF4444" translateX="10" translateY="-10"/>
@@ -165,7 +156,7 @@
                     <Insets top="24" bottom="24" left="8" right="8"/>
                 </padding>
 
-                <StackPane style="-fx-background-color: linear-gradient(to bottom right, #7C3AED, #EC4899);
+                <StackPane style="-fx-background-color: #7C3AED;
                           -fx-background-radius: 18;
                           -fx-pref-width: 56;
                           -fx-pref-height: 56;
@@ -195,14 +186,7 @@
                         <Label text="Categorias"
                                style="-fx-text-fill: #71717A; -fx-font-size: 10px; -fx-font-weight: 600;"/>
                     </VBox>
-
-                    <VBox alignment="CENTER" spacing="4">
-                        <FontIcon iconLiteral="mdi2c-chart-line" iconSize="24" iconColor="#71717A"/>
-                        <Label text="Relatórios"
-                               style="-fx-text-fill: #71717A; -fx-font-size: 10px; -fx-font-weight: 600;"/>
-                    </VBox>
-
-                    <VBox alignment="CENTER" spacing="4">
+                    <VBox alignment="CENTER" spacing="4" onMouseClicked="#handleNavigateGoals">
                         <FontIcon iconLiteral="mdi2t-target" iconSize="24" iconColor="#71717A"/>
                         <Label text="Metas" style="-fx-text-fill: #71717A; -fx-font-size: 10px; -fx-font-weight: 600;"/>
                     </VBox>

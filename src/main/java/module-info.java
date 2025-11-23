@@ -24,6 +24,7 @@ module me.lucasgusmao.financeai {
     requires java.sql;
     requires static java.instrument;
     requires spring.tx;
+    requires java.net.http;
 
     opens me.lucasgusmao.financeai to javafx.fxml, spring.core, spring.beans, spring.context;
     opens me.lucasgusmao.financeai.config to spring.core, spring.beans, spring.context;
