@@ -21,9 +21,7 @@ public class TransactionService {
     public Transaction create(Transaction transaction) {
         User currentUser = authService.getCurrentUser();
         transaction.setUser(currentUser);
-        repository.save(transaction);
-        System.out.println("funcionou:" + transaction);
-        return transaction;
+        return repository.save(transaction);
     }
 
     public List<Transaction> getAll() {
